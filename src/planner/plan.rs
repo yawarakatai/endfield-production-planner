@@ -24,7 +24,7 @@ pub fn plan_production(
 
     let selected_recipe = recipes_by_outpus
         .get(item_id)
-        .and_then(|candidates| candidates.iter().candidates.first().and_then(|id| recipes.get(id)));
+        .and_then(|candidates| candidates.first().and_then(|id| recipes.get(id)));
 
     if let Some(recipe) = selected_recipe {
         let (machine_id, power) = match machines.get(&recipe.by) {
