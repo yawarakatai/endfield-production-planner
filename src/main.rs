@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
 
@@ -20,8 +20,7 @@ struct Recipe {
 #[derive(Debug, Deserialize)]
 struct Machine {
     id: String,
-    /// Crafting speed percentage (100 = 1.0x, 50 = 0.5x, 200 = 2.0x)
-    // speed_percent: u32,
+    tier: u32,
     power: u32,
 }
 
@@ -34,6 +33,43 @@ struct RecipeConfig {
 #[derive(Debug, Deserialize)]
 struct MachineConfig {
     machines: Vec<Machine>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+enum ProductionNode {
+    Resolved {
+        recipe_id: String,
+        machine_id: String,
+        amount: u32,
+        machine_count: u32,
+        load: f32,
+        power_usage: u32,
+        inputs: Vec<ProductionNode>,
+    },
+    Unresolved {
+        item_id: String,
+        amount: u32,
+    },
+}
+
+impl ProductionNode {
+    fn is_source(&self) -> bool {
+        match self {
+            ProductionNode::Resolved { inputs, .. } => inputs.is_empty(),
+            _ => false,
+        }
+    }
+
+    fn total_power(&self) -> u32 {
+        match self {
+            ProductionNode::Resolved {
+                power_usage,
+                inputs,
+                ..
+            } => power_usage + inputs.iter().map(|n| n.total_power()).sum::<u32>(),
+            ProductionNode::Unresolved { .. } => 0,
+        }
+    }
 }
 
 // ---------------------------
@@ -67,40 +103,99 @@ fn main() {
         machines.len()
     );
 
-    calculate_production(&recipes, &machines, "sc_valley_battery", 0);
+    let item_name = "sc_valley_battery";
+    let production_goal = 12;
+    let node = plan_production(&recipes, &machines, item_name, production_goal);
+
+    println!("--- Production Line Tree ---");
+    println!("Total Power: {}", node.total_power());
+    print_production_tree(&node, 0);
 }
 
-fn calculate_production(
+fn plan_production(
     recipes: &HashMap<String, Recipe>,
     machines: &HashMap<String, Machine>,
-    id: &str,
-    depth: usize,
-) {
-    let indent = "  ".repeat(depth);
+    item_id: &str,
+    amount: u32,
+) -> ProductionNode {
+    if let Some(recipe) = recipes.get(item_id) {
+        let selected_machine = recipe
+            .by
+            .iter()
+            .filter_map(|id| machines.get(id))
+            .max_by_key(|m| m.tier);
 
-    if depth > 20 {
-        println!("{}Stop recursion by hitting the depth limit", indent);
-        return;
+        let (machine_id, power) = match selected_machine {
+            Some(m) => (m.id.clone(), m.power),
+            None => ("manual".to_string(), 0),
+        };
+
+        let output_per_craft = *recipe.outputs.get(item_id).unwrap_or(&1);
+        let required_crafts = amount as f32 / output_per_craft as f32;
+        let required_machines = recipe.time as f32 * required_crafts / 60.0;
+        let machine_count = required_machines.ceil() as u32;
+        let load = if machine_count > 0 {
+            required_machines / machine_count as f32
+        } else {
+            0.0
+        };
+
+        let children: Vec<ProductionNode> = recipe
+            .inputs
+            .iter()
+            .map(|(input_id, input_count)| {
+                let sub_amount = *input_count as f32 * required_crafts;
+                plan_production(recipes, machines, input_id, sub_amount.ceil() as u32)
+            })
+            .collect();
+
+        return ProductionNode::Resolved {
+            recipe_id: item_id.to_string(),
+            machine_id: machine_id.to_string(),
+            amount,
+            machine_count,
+            load,
+            power_usage: power * machine_count,
+            inputs: children,
+        };
     }
 
-    if let Some(recipe) = recipes.get(id) {
-        if recipe.inputs.is_empty() {
-            for machine in &recipe.by {
-                println!("{}Mine {} by {}", indent, recipe.id, machine);
+    ProductionNode::Unresolved {
+        item_id: item_id.to_string(),
+        amount,
+    }
+}
+
+fn print_production_tree(node: &ProductionNode, depth: usize) {
+    let indent = "  ".repeat(depth);
+
+    match node {
+        ProductionNode::Resolved {
+            recipe_id,
+            machine_id,
+            amount,
+            machine_count,
+            inputs,
+            ..
+        } => {
+            if node.is_source() {
+                println!(
+                    "{}[Source] {} x{} (via: {} x{})",
+                    indent, recipe_id, amount, machine_id, machine_count
+                );
+            } else {
+                println!(
+                    "{}[Craft] {} x{} (via: {} x{})",
+                    indent, recipe_id, amount, machine_id, machine_count
+                );
+
+                for child in inputs {
+                    print_production_tree(child, depth + 1)
+                }
             }
-            return;
         }
-
-        for machine in &recipe.by {
-            println!("{}Craft {} by {}", indent, recipe.id, machine);
+        ProductionNode::Unresolved { item_id, .. } => {
+            println!("{}[MISSING] No recipe for {}", indent, item_id)
         }
-
-        for (input_item_id, count) in &recipe.inputs {
-            println!("{}  - Need {} x{}", indent, input_item_id, count);
-
-            calculate_production(recipes, machines, input_item_id, depth + 1);
-        }
-    } else {
-        println!("{}? No recipe found for '{}'", indent, id);
     }
 }
