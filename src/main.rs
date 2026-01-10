@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
 
+const PRODUCTION_TIME_WINDOW: f64 = 60.0;
+
 // ---------------------------
 // Data Structures
 // ---------------------------
@@ -42,8 +44,8 @@ enum ProductionNode {
         machine_id: String,
         amount: u32,
         machine_count: u32,
-        load: f32,
         power_usage: u32,
+        load: f64,
         inputs: Vec<ProductionNode>,
     },
     Unresolved {
@@ -141,16 +143,16 @@ fn main() {
     for (item, count) in node.total_source_materials() {
         println!(" - {}: {}", item, count);
     }
-    println!("Total Power: {}", node.total_power());
+    println!("Total Power Usage: {}", node.total_power());
 }
 
 fn plan_production(
     recipes: &HashMap<String, Recipe>,
     machines: &HashMap<String, Machine>,
-    item_id: &str,
+    recipe_id: &str,
     amount: u32,
 ) -> ProductionNode {
-    if let Some(recipe) = recipes.get(item_id) {
+    if let Some(recipe) = recipes.get(recipe_id) {
         let selected_machine = recipe
             .by
             .iter()
@@ -162,38 +164,44 @@ fn plan_production(
             None => ("manual".to_string(), 0),
         };
 
-        let output_per_craft = *recipe.outputs.get(item_id).unwrap_or(&1);
-        let required_crafts = amount as f32 / output_per_craft as f32;
-        let required_machines = recipe.time as f32 * required_crafts / 60.0;
+        let amount_f64 = amount as f64;
+        let output_per_craft = *recipe.outputs.get(recipe_id).unwrap_or(&1) as f64;
+        let craft_time = recipe.time as f64;
+
+        let required_crafts = amount_f64 / output_per_craft;
+        let required_machines = craft_time * required_crafts / PRODUCTION_TIME_WINDOW;
         let machine_count = required_machines.ceil() as u32;
+
         let load = if machine_count > 0 {
-            required_machines / machine_count as f32
+            required_machines / machine_count as f64
         } else {
             0.0
         };
+
+        let power_usage = power.checked_mul(machine_count).unwrap_or(0);
 
         let children: Vec<ProductionNode> = recipe
             .inputs
             .iter()
             .map(|(input_id, input_count)| {
-                let sub_amount = *input_count as f32 * required_crafts;
+                let sub_amount = *input_count as f64 * required_crafts;
                 plan_production(recipes, machines, input_id, sub_amount.ceil() as u32)
             })
             .collect();
 
         return ProductionNode::Resolved {
-            recipe_id: item_id.to_string(),
+            recipe_id: recipe_id.to_string(),
             machine_id: machine_id.to_string(),
             amount,
             machine_count,
+            power_usage,
             load,
-            power_usage: power * machine_count,
             inputs: children,
         };
     }
 
     ProductionNode::Unresolved {
-        item_id: item_id.to_string(),
+        item_id: recipe_id.to_string(),
         amount,
     }
 }
