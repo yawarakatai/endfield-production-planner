@@ -8,6 +8,7 @@
 # --- The Player (Hand) ---
 [[machines]]
 id = "hand"
+tier = 0
 power = 0
 
 # --- Automated Industry Complex (AIC) ---
@@ -15,64 +16,79 @@ power = 0
 
 [[machines]]
 id = "portable_originium_rig"
+tier = 1
 power = 0
 
 [[machines]]
 id = "electric_mining_rig"
+tier = 2
 power = 5
 
 [[machines]]
 id = "fluid_pump"
+tier = 2
 power = 5
 
 [[machines]]
 id = "electric_mining_rig_mk2"
+tier = 3
 power = 10
 
 # --- Processing ---
 
 [[machines]]
 id = "refining_unit"
+tier = 1
 power = 5
 
 [[machines]]
 id = "shredding_unit"
+tier = 1
 power = 10
 
 [[machines]]
 id = "fitting_unit"
+tier = 2
 power = 10
 
 [[machines]]
 id = "moulding_unit"
+tier = 2
 power = 10
 
 [[machines]]
 id = "planting_unit"
+tier = 3
 power = 10
 
 [[machines]]
 id = "seed_picking_unit"
+tier = 3
 power = 10
 
 # --- Assembly ---
 
 [[machines]]
 id = "gearing_unit"
+tier = 1
 power = 10
 
 [[machines]]
 id = "filling_unit"
+tier = 3
 power = 10
 
 [[machines]]
 id = "packaging_unit"
+tier = 3
 power = 30
 
 [[machines]]
 id = "reactor_crucible"
+tier = 3
 power = 10
 
 [[machines]]
 id = "grinding_unit"
+tier = 4
 power = 20
