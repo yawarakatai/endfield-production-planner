@@ -3,7 +3,9 @@
 # Time Unit: second 
 # ==========================================
 
-# --- Naturals Recipes ---
+# --- Resourcing ---
+
+# --- Mining Rig ---
 
 [[recipes]]
 id = "originium_ore"
@@ -13,80 +15,436 @@ by = [
   "electric_mining_rig_mk2",
 ]
 time = 2
-[recipes.outputs]
-originium_ore = 1
+out = 1
 
 [[recipes]]
 id = "amethyst_ore"
 by = ["electric_mining_rig", "electric_mining_rig_mk2"]
 time = 2
-[recipes.outputs]
-amethyst_ore = 1
-
+out = 1
 
 [[recipes]]
 id = "ferrium_ore"
 by = ["electric_mining_rig_mk2"]
 time = 2
-[recipes.outputs]
-ferrium_ore = 1
+out = 1
 
-# ---  AIC Products Recipes---
+# --- Fluid Pump
+
+[[recipes]]
+id = "clean_water"
+by = ["fluid_pump"]
+time = 1
+out = 1
+
+[[recipes]]
+id = "jincao_solution"
+by = ["fluid_pump"]
+time = 1
+out = 1
+
+[[recipes]]
+id = "yazhen_solution"
+by = ["fluid_pump"]
+time = 1
+out = 1
+
+# --- Processing ---
+
+# --- Refining Unit ---
 
 [[recipes]]
 id = "origocrust"
 by = ["refining_unit"]
 time = 2
+out = 1
 [recipes.inputs]
 originium_ore = 1
-[recipes.outputs]
-origocrust = 1
+
+[[recipes]]
+id = "origocrust"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+origocrust_powder = 1
 
 [[recipes]]
 id = "amethyst_fiber"
 by = ["refining_unit"]
 time = 2
+out = 1
 [recipes.inputs]
 amethyst_ore = 1
-[recipes.outputs]
-amethyst_fiber = 1
+
+[[recipes]]
+id = "amethyst_fiber"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+amethyst_powder = 1
 
 [[recipes]]
 id = "ferrium"
 by = ["refining_unit"]
 time = 2
+out = 1
 [recipes.inputs]
 ferrium_ore = 1
-[recipes.outputs]
-ferrium = 1
 
 [[recipes]]
-id = "ferrium_part"
-by = ["fitting_unit"]
+id = "ferrium"
+by = ["refining_unit"]
 time = 2
+out = 1
 [recipes.inputs]
-ferrium = 1
-[recipes.outputs]
-ferrium_part = 1
+ferrium_powder = 1
+
+[[recipes]]
+id = "origocrust_powder"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+originium_powder = 1
+
+[[recipes]]
+id = "carbon"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+wood = 1
+
+[[recipes]]
+id = "carbon"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+buckflower = 1
+
+[[recipes]]
+id = "carbon"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+citrome = 1
+
+[[recipes]]
+id = "carbon"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf = 1
+
+[[recipes]]
+id = "carbon"
+by = ["refining_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+jincao = 1
+
+[[recipes]]
+id = "carbon"
+by = ["refining_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+yazhen = 1
+
+[[recipes]]
+id = "carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+buckflower_powder = 1
+
+[[recipes]]
+id = "carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+citrome_powder = 1
+
+[[recipes]]
+id = "carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+sandleaf_powder = 3
+
+[[recipes]]
+id = "carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+jincao_powder = 1
+
+[[recipes]]
+id = "carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+yazhen_powder = 1
+
+[[recipes]]
+id = "dense_origocrust_powder"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+dense_originium_powder = 1
+
+[[recipes]]
+id = "packed_origocrust"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+dense_origocrust_powder = 1
+
+[[recipes]]
+id = "crystal_fiber"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+crystal_powder = 1
+
+[[recipes]]
+id = "steel"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+dense_ferrium_powder = 1
+
+[[recipes]]
+id = "dense_carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+ground_buckflower_powder = 1
+
+[[recipes]]
+id = "dense_carbon_powder"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+ground_citrome_powder = 1
+
+[[recipes]]
+id = "stabilized_carbon"
+by = ["refining_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+dense_carbon_powder = 1
+
+# --- Shredding Unit ---
 
 [[recipes]]
 id = "originium_powder"
 by = ["shredding_unit"]
 time = 2
+out = 1
+[recipes.inputs]
+originium = 1
+
+[[recipes]]
+id = "origocrust_powder"
+by = ["shredding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+origocrust = 1
+
+[[recipes]]
+id = "amethyst_powder"
+by = ["shredding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+amethyst = 1
+
+[[recipes]]
+id = "ferrium_powder"
+by = ["shredding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+ferrium = 1
+
+[[recipes]]
+id = "carbon_powder"
+by = ["shredding_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+carbon = 1
+
+[[recipes]]
+id = "buckflower_powder"
+by = ["shredding_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+buckflower = 1
+
+[[recipes]]
+id = "citrome_powder"
+by = ["shredding_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+citrome = 1
+
+[[recipes]]
+id = "sandleaf_powder"
+by = ["shredding_unit"]
+time = 2
+out = 3
+[recipes.inputs]
+sandleaf = 1
+
+[[recipes]]
+id = "jincao_powder"
+by = ["shredding_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+jincao = 1
+
+[[recipes]]
+id = "yazhen_powder"
+by = ["shredding_unit"]
+time = 2
+out = 2
+[recipes.inputs]
+yazhen = 1
+
+# --- Fitting Unit ---
+
+[[recipes]]
+id = "ferrium_part"
+by = ["fitting_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+ferrium = 1
+
+[[recipes]]
+id = "steel_part"
+by = ["fitting_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+steel = 1
+
+[[recipes]]
+id = "originium_powder"
+by = ["shredding_unit"]
+time = 2
+out = 1
 [recipes.inputs]
 originium_ore = 1
-[recipes.outputs]
-originium_powder = 1
+
+# --- Grinding Unit ---
+
+[[recipes]]
+id = "dense_originium_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+originium_powder = 2
+
+[[recipes]]
+id = "dense_origocrust_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+origocrust_powder = 2
+
+[[recipes]]
+id = "crystal_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+amethyst_powder = 2
+
+[[recipes]]
+id = "dense_ferrium_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+ferrium_powder = 2
+
+[[recipes]]
+id = "dense_carbon_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+carbon_powder = 2
+
+[[recipes]]
+id = "ground_buckflower_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+buckflower_powder = 2
+
+[[recipes]]
+id = "ground_citrome_powder"
+by = ["grinding_unit"]
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_powder = 1
+citrome_powder = 2
+
+# --- Packaging Unit ---
 
 [[recipes]]
 id = "sc_valley_battery"
 by = ["packaging_unit"]
 time = 10
+out = 1
 [recipes.inputs]
 originium_powder = 15
 ferrium_part = 10
-[recipes.outputs]
-sc_valley_battery = 1
+
+[[recipes]]
+id = "hc_valley_battery"
+by = ["packaging_unit"]
+time = 10
+out = 1
+[recipes.inputs]
+dense_originium_powder = 15
+steel_part = 10
 
 # --- Usables Recipes ---
 
@@ -96,27 +454,48 @@ sc_valley_battery = 1
 id = "portable_originium_rig"
 by = ["hand"]
 time = 0
+out = 1
 [recipes.inputs]
 originium_ore = 5
-[recipes.outputs]
-portable_originium_rig = 1
 
 [[recipes]]
 id = "electric_mining_rig"
 by = ["hand"]
 time = 0
+out = 1
 [recipes.inputs]
 portable_miner = 1
 originium_ore = 5
-[recipes.outputs]
-electric_mining_rig = 1
+
+[[recipes]]
+id = "fluid_pump"
+by = ["hand"]
+time = 0
+out = 1
+[recipes.inputs]
+ferrium_part = 10
 
 [[recipes]]
 id = "electric_mining_rig_mk2"
 by = ["hand"]
 time = 0
+out = 1
 [recipes.inputs]
 portable_miner = 1
 ferrium_ore = 10
-[recipes.outputs]
-electric_mining_rig_mk_2 = 1
+
+[[recipes]]
+id = "grinding_unit"
+by = ["hand"]
+time = 0
+out = 1
+
+[recipes.inputs]
+ferrium_part = 10
+[[recipes]]
+id = "grinding_unit"
+by = ["hand"]
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 5
