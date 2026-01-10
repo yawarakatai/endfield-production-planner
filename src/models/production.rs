@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, Serialize)]
 pub enum ProductionNode {
     Resolved {
-        recipe_id: String,
+        item_id: String,
         machine_id: String,
         amount: u32,
         machine_count: u32,
@@ -13,6 +13,10 @@ pub enum ProductionNode {
         inputs: Vec<ProductionNode>,
     },
     Unresolved {
+        item_id: String,
+        amount: u32,
+    },
+    Cycle {
         item_id: String,
         amount: u32,
     },
@@ -33,7 +37,7 @@ impl ProductionNode {
                 inputs,
                 ..
             } => power_usage + inputs.iter().map(|n| n.total_power()).sum::<u32>(),
-            ProductionNode::Unresolved { .. } => 0,
+            _ => 0,
         }
     }
 
@@ -46,13 +50,13 @@ impl ProductionNode {
     fn collect_totals(&self, totals: &mut HashMap<String, u32>) {
         match self {
             ProductionNode::Resolved {
-                recipe_id,
+                item_id,
                 amount,
                 inputs,
                 ..
             } => {
                 if self.is_source() {
-                    *totals.entry(recipe_id.clone()).or_insert(0) += amount;
+                    *totals.entry(item_id.clone()).or_insert(0) += amount;
                 } else {
                     for child in inputs {
                         child.collect_totals(totals);
@@ -60,6 +64,9 @@ impl ProductionNode {
                 }
             }
             ProductionNode::Unresolved { item_id, amount } => {
+                *totals.entry(item_id.clone()).or_insert(0) += amount;
+            }
+            ProductionNode::Cycle { item_id, amount } => {
                 *totals.entry(item_id.clone()).or_insert(0) += amount;
             }
         }

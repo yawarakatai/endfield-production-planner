@@ -5,7 +5,7 @@ fn print_production_tree(node: &ProductionNode, depth: usize) {
 
     match node {
         ProductionNode::Resolved {
-            recipe_id,
+            item_id,
             machine_id,
             amount,
             machine_count,
@@ -15,12 +15,12 @@ fn print_production_tree(node: &ProductionNode, depth: usize) {
             if node.is_source() {
                 println!(
                     "{}[Source] {} x{} (via: {} x{})",
-                    indent, recipe_id, amount, machine_id, machine_count
+                    indent, item_id, amount, machine_id, machine_count
                 );
             } else {
                 println!(
                     "{}[Craft] {} x{} (via: {} x{})",
-                    indent, recipe_id, amount, machine_id, machine_count
+                    indent, item_id, amount, machine_id, machine_count
                 );
 
                 for child in inputs {
@@ -30,6 +30,9 @@ fn print_production_tree(node: &ProductionNode, depth: usize) {
         }
         ProductionNode::Unresolved { item_id, .. } => {
             println!("{}[MISSING] No recipe for {}", indent, item_id)
+        }
+        ProductionNode::Cycle { item_id, .. } => {
+            println!("{}[CYCLE!] Loop detected at {}", indent, item_id);
         }
     }
 }

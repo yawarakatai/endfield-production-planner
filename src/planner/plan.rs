@@ -1,13 +1,26 @@
 use crate::constants::PRODUCTION_TIME_WINDOW;
 use crate::models::{Machine, ProductionNode, Recipe};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub fn plan_production(
     recipes: &HashMap<String, Recipe>,
     machines: &HashMap<String, Machine>,
     item_id: &str,
     amount: u32,
+    visiting: &mut HashSet<String>,
 ) -> ProductionNode {
+    // Detect circular reference
+    if visiting.contains(item_id) {
+        eprintln!("Warning: Cycle detected for {}", item_id);
+        return ProductionNode::Cycle {
+            item_id: item_id.to_string(),
+            amount,
+        };
+    }
+
+    // Start recording of visit
+    visiting.insert(item_id.to_string());
+
     if let Some(recipe) = recipes.get(item_id) {
         let selected_machine = recipe
             .by
@@ -38,12 +51,12 @@ pub fn plan_production(
             .iter()
             .map(|(input_id, input_count)| {
                 let sub_amount = (*input_count as f64 * required_crafts).ceil() as u32;
-                plan_production(recipes, machines, input_id, sub_amount)
+                plan_production(recipes, machines, input_id, sub_amount, visiting)
             })
             .collect();
 
         return ProductionNode::Resolved {
-            recipe_id: item_id.to_string(),
+            item_id: item_id.to_string(),
             machine_id,
             amount,
             machine_count,
@@ -52,6 +65,9 @@ pub fn plan_production(
             inputs: children,
         };
     }
+
+    // Backtrack
+    visiting.remove(item_id);
 
     ProductionNode::Unresolved {
         item_id: item_id.to_string(),
