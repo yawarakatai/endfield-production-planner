@@ -1,0 +1,127 @@
+# ==========================================
+# Recipe Definitions
+# Time Unit: second 
+# ==========================================
+
+# --- Naturals Recipes ---
+
+[[recipes]]
+id = "inpure_originium_ore"
+by = [
+  "portable_originium_rig",
+  "electric_mining_rig",
+  "electric_mining_rig_mk2",
+]
+time = 2
+[recipes.outputs]
+originium_ore = 1
+
+[[recipes]]
+id = "pure_originium_ore"
+by = [
+  "portable_originium_rig",
+  "electric_mining_rig",
+  "electric_mining_rig_mk2",
+]
+time = 1
+[recipes.outputs]
+originium_ore = 1
+
+[[recipes]]
+id = "inpure_amethyst_ore"
+by = ["electric_mining_rig", "electric_mining_rig_mk2"]
+time = 2
+[recipes.outputs]
+amethyst_ore = 1
+
+[[recipes]]
+id = "pure_amethyst_ore"
+by = ["electric_mining_rig", "electric_mining_rig_mk2"]
+time = 1
+[recipes.outputs]
+amethyst_ore = 1
+
+[[recipes]]
+id = "inpure_ferrium_ore"
+by = ["electric_mining_rig_mk2"]
+time = 2
+[recipes.outputs]
+ferrium_ore = 1
+
+[[recipes]]
+id = "pure_ferrium_ore"
+by = ["electric_mining_rig_mk2"]
+time = 1
+[recipes.outputs]
+ferrium_ore = 1
+
+# ---  AIC Products Recipes---
+
+[[recipes]]
+id = "origocrust"
+by = ["refining_unit"]
+time = 2
+[recipes.inputs]
+originium_ore = 1
+[recipes.outputs]
+origocrust = 1
+
+[[recipes]]
+id = "amethyst_fiber"
+by = ["refining_unit"]
+time = 2
+[recipes.inputs]
+amethyst_ore = 1
+[recipes.outputs]
+amethyst_fiber = 1
+
+[[recipes]]
+id = "ferrium"
+by = ["refining_unit"]
+time = 2
+[recipes.inputs]
+ferrium_ore = 1
+[recipes.outputs]
+ferrium = 1
+
+[[recipes]]
+id = "iron_parts"
+by = "fitting_unit"
+time = 2
+[recipes.inputs]
+ferrium = 1
+[recipes.outputs]
+iron_parts = 1
+
+# --- Usables Recipes ---
+
+# --- Construct Recipes (Machines) ---
+
+[[recipes]]
+id = "portable_originium_rig"
+category = "crafting"
+time = 0
+[recipes.inputs]
+originium_ore = 5
+[recipes.outputs]
+portable_originium_rig = 1
+
+[[recipes]]
+id = "electric_mining_rig"
+category = "crafting"
+time = 0
+[recipes.inputs]
+portable_miner = 1
+originium_ore = 5
+[recipes.outputs]
+electric_mining_rig = 1
+
+[[recipes]]
+id = "electric_mining_rig_mk2"
+category = "crafting"
+time = 0
+[recipes.inputs]
+portable_miner = 1
+ferrium_ore = 10
+[recipes.outputs]
+electric_mining_rig_mk_2 = 1
