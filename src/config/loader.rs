@@ -35,7 +35,10 @@ impl GameData {
         let recipes = recipe_config
             .recipes
             .into_iter()
-            .map(|r| (r.id.clone(), r))
+            .map(|mut r| {
+                r.normalize();
+                (r.id.clone(), r)
+            })
             .collect();
 
         let machines = machine_config
