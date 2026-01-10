@@ -70,6 +70,34 @@ impl ProductionNode {
             ProductionNode::Unresolved { .. } => 0,
         }
     }
+
+    fn total_source_materials(&self) -> HashMap<String, u32> {
+        let mut totals = HashMap::new();
+        self.collect_totals(&mut totals);
+        totals
+    }
+
+    fn collect_totals(&self, totals: &mut HashMap<String, u32>) {
+        match self {
+            ProductionNode::Resolved {
+                recipe_id,
+                amount,
+                inputs,
+                ..
+            } => {
+                if self.is_source() {
+                    *totals.entry(recipe_id.clone()).or_insert(0) += amount;
+                } else {
+                    for child in inputs {
+                        child.collect_totals(totals);
+                    }
+                }
+            }
+            ProductionNode::Unresolved { item_id, amount } => {
+                *totals.entry(item_id.clone()).or_insert(0) += amount;
+            }
+        }
+    }
 }
 
 // ---------------------------
@@ -108,8 +136,12 @@ fn main() {
     let node = plan_production(&recipes, &machines, item_name, production_goal);
 
     println!("--- Production Line Tree ---");
-    println!("Total Power: {}", node.total_power());
     print_production_tree(&node, 0);
+    println!("Total Raw Materials Needed:");
+    for (item, count) in node.total_source_materials() {
+        println!(" - {}: {}", item, count);
+    }
+    println!("Total Power: {}", node.total_power());
 }
 
 fn plan_production(
