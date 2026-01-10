@@ -5,6 +5,8 @@ mod models;
 mod output;
 mod planner;
 
+use std::collections::HashSet;
+
 use config::GameData;
 use error::ProductionError;
 use output::print_summary;
@@ -28,7 +30,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )));
     }
 
-    let node = plan_production(&data.recipes, &data.machines, item_name, production_goal);
+    let mut visiting = HashSet::new();
+
+    let node = plan_production(
+        &data.recipes,
+        &data.machines,
+        item_name,
+        production_goal,
+        &mut visiting,
+    );
 
     print_summary(&node);
 
