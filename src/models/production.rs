@@ -16,10 +16,6 @@ pub enum ProductionNode {
         item_id: String,
         amount: u32,
     },
-    Cycle {
-        item_id: String,
-        amount: u32,
-    },
 }
 
 impl ProductionNode {
@@ -52,8 +48,7 @@ impl ProductionNode {
                     None
                 }
             }
-            ProductionNode::Unresolved { item_id, amount }
-            | ProductionNode::Cycle { item_id, amount } => Some((item_id.clone(), *amount)),
+            ProductionNode::Unresolved { item_id, amount } => Some((item_id.clone(), *amount)),
         })
     }
 

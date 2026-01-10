@@ -20,9 +20,6 @@ fn print_node_recursive(node: &ProductionNode, prefix: &str, is_last: bool) {
         ProductionNode::Unresolved { item_id, .. } => {
             format!("{} [MISSING RECIPE]", item_id)
         }
-        ProductionNode::Cycle { item_id, .. } => {
-            format!("{} [CYCLE DETECTED]", item_id)
-        }
     };
 
     println!("{}{}{}", prefix, connector, node_info);
