@@ -21,12 +21,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         data.machines.len()
     );
 
-    let item_name = "sc_valley_battery";
-    let production_goal = 12;
+    let item_id = "steel_part";
+    let amount = 60; // per minute
 
-    if !data.recipes.contains_key(item_name) {
+    if !data.recipes_by_output.contains_key(item_id) {
         return Err(Box::new(ProductionError::RecipeNotFound(
-            item_name.to_string(),
+            item_id.to_string(),
         )));
     }
 
@@ -34,9 +34,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let node = plan_production(
         &data.recipes,
+        &data.recipes_by_output,
         &data.machines,
-        item_name,
-        production_goal,
+        item_id,
+        amount,
         &mut visiting,
     );
 

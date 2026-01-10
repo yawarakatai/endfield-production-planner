@@ -24,4 +24,17 @@ impl Recipe {
             self.outputs.insert(self.id.clone(), count);
         }
     }
+
+    pub fn compute_unique_id(&self) -> String {
+        let mut sorted_inputs: Vec<_> = self.inputs.iter().collect();
+        sorted_inputs.sort_by_key(|(k, _)| *k);
+
+        let inputs_str: String = sorted_inputs
+            .iter()
+            .map(|(k, v)| format!("{}:{}", k, v))
+            .collect::<Vec<_>>()
+            .join(",");
+
+        format!("{}@{}[{}]", self.id, self.by, inputs_str)
+    }
 }

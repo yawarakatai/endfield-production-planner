@@ -17,6 +17,7 @@ struct MachineConfig {
 
 pub struct GameData {
     pub recipes: HashMap<String, Recipe>,
+    pub recipes_by_output: HashMap<String, Vec<String>>,
     pub machines: HashMap<String, Machine>,
 }
 
@@ -32,14 +33,22 @@ impl GameData {
         let machine_config: MachineConfig = toml::from_str(&machines_str)
             .map_err(|e| ProductionError::ParseError(format!("machines.toml: {}", e)))?;
 
-        let recipes = recipe_config
-            .recipes
-            .into_iter()
-            .map(|mut r| {
-                r.normalize();
-                (r.id.clone(), r)
-            })
-            .collect();
+        let mut recipes = HashMap::new();
+        let mut recipes_by_output: HashMap<String, Vec<String>> = HashMap::new();
+
+        for mut r in recipe_config.recipes {
+            r.normalize();
+
+            let unique_id = r.compute_unique_id();
+            let output_item = r.id.clone();
+
+            recipes_by_output
+                .entry(output_item)
+                .or_default()
+                .push(unique_id.clone());
+
+            recipes.insert(unique_id, r);
+        }
 
         let machines = machine_config
             .machines
@@ -47,6 +56,10 @@ impl GameData {
             .map(|m| (m.id.clone(), m))
             .collect();
 
-        Ok(GameData { recipes, machines })
+        Ok(GameData {
+            recipes,
+            recipes_by_output,
+            machines,
+        })
     }
 }

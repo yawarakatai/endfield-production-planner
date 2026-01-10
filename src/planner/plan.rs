@@ -4,6 +4,7 @@ use std::collections::{HashMap, HashSet};
 
 pub fn plan_production(
     recipes: &HashMap<String, Recipe>,
+    recipes_by_outpus: &HashMap<String, Vec<String>>,
     machines: &HashMap<String, Machine>,
     item_id: &str,
     amount: u32,
@@ -21,7 +22,11 @@ pub fn plan_production(
     // Start recording of visit
     visiting.insert(item_id.to_string());
 
-    if let Some(recipe) = recipes.get(item_id) {
+    let selected_recipe = recipes_by_outpus
+        .get(item_id)
+        .and_then(|candidates| candidates.iter().candidates.first().and_then(|id| recipes.get(id)));
+
+    if let Some(recipe) = selected_recipe {
         let (machine_id, power) = match machines.get(&recipe.by) {
             Some(m) => (m.id.clone(), m.power),
             None => ("manual".to_string(), 0),
@@ -45,7 +50,14 @@ pub fn plan_production(
             .iter()
             .map(|(input_id, input_count)| {
                 let sub_amount = (*input_count as f64 * required_crafts).ceil() as u32;
-                plan_production(recipes, machines, input_id, sub_amount, visiting)
+                plan_production(
+                    recipes,
+                    recipes_by_outpus,
+                    machines,
+                    input_id,
+                    sub_amount,
+                    visiting,
+                )
             })
             .collect();
 
