@@ -22,9 +22,30 @@ pub fn plan_production(
     // Start recording of visit
     visiting.insert(item_id.to_string());
 
-    let selected_recipe = recipes_by_outpus
-        .get(item_id)
-        .and_then(|candidates| candidates.first().and_then(|id| recipes.get(id)));
+    let selected_recipe = recipes_by_outpus.get(item_id).and_then(|candidates| {
+        candidates
+            .iter()
+            .filter_map(|id| recipes.get(id))
+            .max_by(|recipe_a, recipe_b| {
+                let machine_a = machines.get(&recipe_a.by);
+                let machine_b = machines.get(&recipe_b.by);
+
+                let tier_a = machine_a.map(|m| m.tier).unwrap_or(0);
+                let tier_b = machine_b.map(|m| m.tier).unwrap_or(0);
+
+                let power_a = machine_a.map(|m| m.power).unwrap_or(0);
+                let power_b = machine_b.map(|m| m.power).unwrap_or(0);
+
+                // Priority:
+                // First: higher tier
+                // Second: lower power
+                // Third: sort by id
+                tier_a
+                    .cmp(&tier_b)
+                    .then_with(|| power_b.cmp(&power_a))
+                    .then_with(|| recipe_a.id.cmp(&recipe_b.id))
+            })
+    });
 
     if let Some(recipe) = selected_recipe {
         let (machine_id, power) = match machines.get(&recipe.by) {
