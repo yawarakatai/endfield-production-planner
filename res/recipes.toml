@@ -86,7 +86,7 @@ ferrium = 1
 
 [[recipes]]
 id = "iron_parts"
-by = "fitting_unit"
+by = ["fitting_unit"]
 time = 2
 [recipes.inputs]
 ferrium = 1
@@ -99,7 +99,7 @@ iron_parts = 1
 
 [[recipes]]
 id = "portable_originium_rig"
-category = "crafting"
+by = ["hand"]
 time = 0
 [recipes.inputs]
 originium_ore = 5
@@ -108,7 +108,7 @@ portable_originium_rig = 1
 
 [[recipes]]
 id = "electric_mining_rig"
-category = "crafting"
+by = ["hand"]
 time = 0
 [recipes.inputs]
 portable_miner = 1
@@ -118,7 +118,7 @@ electric_mining_rig = 1
 
 [[recipes]]
 id = "electric_mining_rig_mk2"
-category = "crafting"
+by = ["hand"]
 time = 0
 [recipes.inputs]
 portable_miner = 1
