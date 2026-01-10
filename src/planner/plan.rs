@@ -22,13 +22,7 @@ pub fn plan_production(
     visiting.insert(item_id.to_string());
 
     if let Some(recipe) = recipes.get(item_id) {
-        let selected_machine = recipe
-            .by
-            .iter()
-            .filter_map(|id| machines.get(id))
-            .max_by_key(|m| m.tier);
-
-        let (machine_id, power) = match selected_machine {
+        let (machine_id, power) = match machines.get(&recipe.by) {
             Some(m) => (m.id.clone(), m.power),
             None => ("manual".to_string(), 0),
         };

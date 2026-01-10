@@ -5,7 +5,7 @@ use std::collections::HashMap;
 #[derive(Debug, Deserialize, Clone)]
 pub struct Recipe {
     pub id: String,
-    pub by: Vec<String>,
+    pub by: String,
     pub time: u32,
     out: Option<u32>,
     #[serde(default)]
