@@ -10,19 +10,6 @@ pub fn plan_production(
     amount: u32,
     visiting: &mut HashSet<String>,
 ) -> ProductionNode {
-    // Detect circular reference
-    if visiting.contains(item_id) {
-        return ProductionNode::Resolved {
-            item_id: item_id.to_string(),
-            machine_id: "Loop Source".to_string(),
-            amount,
-            machine_count: 0,
-            power_usage: 0,
-            load: 0.0,
-            inputs: Vec::new(),
-        };
-    }
-
     // Start recording of visit
     visiting.insert(item_id.to_string());
 
@@ -73,16 +60,21 @@ pub fn plan_production(
         let children: Vec<ProductionNode> = recipe
             .inputs
             .iter()
-            .map(|(input_id, input_count)| {
+            .filter_map(|(input_id, input_count)| {
+                if visiting.contains(input_id) {
+                    return None;
+                }
+
                 let sub_amount = (*input_count as f64 * required_crafts).ceil() as u32;
-                plan_production(
+
+                Some(plan_production(
                     recipes,
                     recipes_by_outpus,
                     machines,
                     input_id,
                     sub_amount,
                     visiting,
-                )
+                ))
             })
             .collect();
 
