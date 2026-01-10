@@ -7,7 +7,7 @@ use std::fs;
 // ---------------------------
 
 #[derive(Debug, Deserialize)]
-struct RecipeDef {
+struct Recipe {
     id: String,
     by: Vec<String>,
     time: u32,
@@ -18,22 +18,22 @@ struct RecipeDef {
 }
 
 #[derive(Debug, Deserialize)]
-struct MachineDef {
+struct Machine {
     id: String,
     /// Crafting speed percentage (100 = 1.0x, 50 = 0.5x, 200 = 2.0x)
     // speed_percent: u32,
-    power_usage: u32,
+    power: u32,
 }
 
 // Wrapper for TOML structure [[recipes]] / [[machines]]
 #[derive(Debug, Deserialize)]
 struct RecipeConfig {
-    recipes: Vec<RecipeDef>,
+    recipes: Vec<Recipe>,
 }
 
 #[derive(Debug, Deserialize)]
 struct MachineConfig {
-    machines: Vec<MachineDef>,
+    machines: Vec<Machine>,
 }
 
 // ---------------------------
@@ -49,13 +49,13 @@ fn main() {
     let machine_config: MachineConfig = toml::from_str(&machines_str).expect("Machine Parse Error");
 
     // Convert to HashMaps for easy lookup (ID -> Data)
-    let recipes: HashMap<String, RecipeDef> = recipe_config
+    let recipes: HashMap<String, Recipe> = recipe_config
         .recipes
         .into_iter()
         .map(|r| (r.id.clone(), r))
         .collect();
 
-    let machines: HashMap<String, MachineDef> = machine_config
+    let machines: HashMap<String, Machine> = machine_config
         .machines
         .into_iter()
         .map(|m| (m.id.clone(), m))
@@ -67,34 +67,40 @@ fn main() {
         machines.len()
     );
 
-    // ---------------------------
-    // Example Calculation
-    // ---------------------------
-
-    // Case 1: Mining 'Originium' with 'Electric Miner 2'
-    let recipe_id = "pure_originium_ore";
-    let machine_id = "electric_mining_rig_mk2";
-
-    if let (Some(recipe), Some(machine)) = (recipes.get(recipe_id), machines.get(machine_id)) {
-        calculate_production(recipe, machine);
-    }
-
-    // Case 2: Assembling 'Iron Parts' with 'Assembler 1' (Slower machine)
-    let recipe_id = "origocrust";
-    let machine_id = "refining_unit";
-
-    if let (Some(recipe), Some(machine)) = (recipes.get(recipe_id), machines.get(machine_id)) {
-        calculate_production(recipe, machine);
-    }
+    calculate_production(&recipes, &machines, "sc_valley_battery", 0);
 }
 
-/// Calculate actual time using integer math
-fn calculate_production(recipe: &RecipeDef, machine: &MachineDef) {
-    println!("--- Calculation: {} + {} ---", recipe.id, machine.id);
-    if recipe.by.contains(&machine.id) {
-        println!("Total Time: {:} sec", recipe.time);
-        println!("Total Power Usage: {} ", machine.power_usage);
+fn calculate_production(
+    recipes: &HashMap<String, Recipe>,
+    machines: &HashMap<String, Machine>,
+    id: &str,
+    depth: usize,
+) {
+    let indent = "  ".repeat(depth);
+
+    if depth > 20 {
+        println!("{}Stop recursion by hitting the depth limit", indent);
+        return;
+    }
+
+    if let Some(recipe) = recipes.get(id) {
+        if recipe.inputs.is_empty() {
+            for machine in &recipe.by {
+                println!("{}Mine {} by {}", indent, recipe.id, machine);
+            }
+            return;
+        }
+
+        for machine in &recipe.by {
+            println!("{}Craft {} by {}", indent, recipe.id, machine);
+        }
+
+        for (input_item_id, count) in &recipe.inputs {
+            println!("{}  - Need {} x{}", indent, input_item_id, count);
+
+            calculate_production(recipes, machines, input_item_id, depth + 1);
+        }
     } else {
-        println!("Error: This ")
+        println!("{}? No recipe found for '{}'", indent, id);
     }
 }
