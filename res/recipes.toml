@@ -291,7 +291,7 @@ by = "shredding_unit"
 time = 2
 out = 1
 [recipes.inputs]
-amethyst = 1
+amethyst_ore = 1
 
 [[recipes]]
 id = "ferrium_powder"
