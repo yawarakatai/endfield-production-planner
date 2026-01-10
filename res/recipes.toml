@@ -228,12 +228,12 @@ out = 1
 dense_origocrust_powder = 1
 
 [[recipes]]
-id = "crystal_fiber"
+id = "cryston_fiber"
 by = "refining_unit"
 time = 2
 out = 1
 [recipes.inputs]
-crystal_powder = 1
+cryston_powder = 1
 
 [[recipes]]
 id = "steel"
@@ -275,7 +275,7 @@ by = "shredding_unit"
 time = 2
 out = 1
 [recipes.inputs]
-originium = 1
+originium_ore = 1
 
 [[recipes]]
 id = "origocrust_powder"
@@ -352,6 +352,22 @@ yazhen = 1
 # --- Fitting Unit ---
 
 [[recipes]]
+id = "amethyst_part"
+by = "fitting_unit"
+time = 2
+out = 1
+[recipes.inputs]
+amethyst_fiber = 1
+
+[[recipes]]
+id = "cryston_part"
+by = "fitting_unit"
+time = 2
+out = 1
+[recipes.inputs]
+cryston_fiber = 1
+
+[[recipes]]
 id = "ferrium_part"
 by = "fitting_unit"
 time = 2
@@ -367,13 +383,502 @@ out = 1
 [recipes.inputs]
 steel = 1
 
+# --- Moulding Unit ---
+
 [[recipes]]
-id = "originium_powder"
-by = "shredding_unit"
+id = "amethyst_bottle"
+by = "moulding_unit"
 time = 2
 out = 1
 [recipes.inputs]
-originium_ore = 1
+amethyst_fiber = 2
+
+[[recipes]]
+id = "cryston_bottle"
+by = "moulding_unit"
+time = 2
+out = 1
+[recipes.inputs]
+cryston_fiber = 2
+
+[[recipes]]
+id = "ferrium_bottle"
+by = "moulding_unit"
+time = 2
+out = 1
+[recipes.inputs]
+ferrium = 2
+
+[[recipes]]
+id = "steel_bottle"
+by = "moulding_unit"
+time = 2
+out = 1
+[recipes.inputs]
+steel = 2
+
+# ---Planting Unit (Solid Mode)---
+[[recipes]]
+id = "buckflower"
+by = "planting_unit"
+time = 2
+out = 1
+[recipes.inputs]
+buckflower_seed = 1
+
+[[recipes]]
+id = "citrome"
+by = "planting_unit"
+time = 2
+out = 1
+[recipes.inputs]
+citrome_seed = 1
+
+[[recipes]]
+id = "sandleaf"
+by = "planting_unit"
+time = 2
+out = 1
+[recipes.inputs]
+sandleaf_seed = 1
+
+[[recipes]]
+id = "aketine"
+by = "planting_unit"
+time = 2
+out = 1
+[recipes.inputs]
+aketine_seed = 1
+
+# --- Planting Unit (Fluid Mode) ---
+[[recipes]]
+id = "jincao"
+by = "planting_unit"
+time = 2
+out = 2
+[recipes.inputs]
+clean_water = 1
+jincao_seed = 1
+
+[[recipes]]
+id = "yazhen"
+by = "planting_unit"
+time = 2
+out = 2
+[recipes.inputs]
+clean_water = 1
+yazhen_seed = 1
+
+# --- Seed-Picking Unit ---
+
+[[recipes]]
+id = "buckflower_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+buckflower = 1
+
+[[recipes]]
+id = "citrome_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+citrome = 1
+
+[[recipes]]
+id = "sandleaf_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+sandleaf = 1
+
+[[recipes]]
+id = "aketine_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+aketine = 1
+
+[[recipes]]
+id = "jincao_seed"
+by = "seed_picking_unit"
+time = 2
+out = 1
+[recipes.inputs]
+jincao = 1
+
+[[recipes]]
+id = "yazhen_seed"
+by = "seed_picking_unit"
+time = 2
+out = 1
+[recipes.inputs]
+yazhen = 1
+
+[[recipes]]
+id = "amber_rice_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+amber_rice = 1
+
+[[recipes]]
+id = "reed_rye_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+reed_rye = 1
+
+[[recipes]]
+id = "tartpepper_seed"
+by = "seed_picking_unit"
+time = 2
+out = 2
+[recipes.inputs]
+tartpepper = 1
+
+# --- Assembly ---
+
+# --- Gearing Unit ---
+
+[[recipes]]
+id = "amethyst_component"
+by = "gearing_unit"
+time = 10
+out = 1
+[recipes.inputs]
+amethyst_fiber = 5
+origocrust = 5
+
+[[recipes]]
+id = "ferrium_component"
+by = "gearing_unit"
+time = 10
+out = 1
+[recipes.inputs]
+ferrium = 10
+origocrust = 10
+
+[[recipes]]
+id = "cryston_component"
+by = "gearing_unit"
+time = 10
+out = 1
+[recipes.inputs]
+cryston_fiber = 10
+packed_origocrust = 10
+
+[[recipes]]
+id = "xiranite_component"
+by = "gearing_unit"
+time = 10
+out = 1
+[recipes.inputs]
+xiranite = 10
+packed_origocrust = 10
+
+# --- Filling Unit (Solid Mode)---
+
+[[recipes]]
+id = "buck_capsule_c"
+by = "filling_unit"
+time = 10
+out = 1
+[recipes.inputs]
+buckflower_powder = 5
+amethyst_bottle = 5
+
+[[recipes]]
+id = "buck_capsule_b"
+by = "filling_unit"
+time = 10
+out = 1
+[recipes.inputs]
+buckflower_powder = 10
+ferrium_bottle = 10
+
+[[recipes]]
+id = "buck_capsule_a"
+by = "filling_unit"
+time = 10
+out = 1
+[recipes.inputs]
+ground_buckflower_powder = 10
+steel_bottle = 10
+
+[[recipes]]
+id = "canned_citrome_c"
+by = "filling_unit"
+time = 10
+out = 1
+[recipes.inputs]
+citrome_powder = 5
+amethyst_bottle = 5
+
+[[recipes]]
+id = "canned_citrome_b"
+by = "filling_unit"
+time = 10
+out = 1
+[recipes.inputs]
+citrome_powder = 10
+ferrium_bottle = 10
+
+[[recipes]]
+id = "canned_citrome_a"
+by = "filling_unit"
+time = 10
+out = 1
+[recipes.inputs]
+ground_citrome_powder = 10
+steel_bottle = 10
+
+# --- Filling Unit (Fluid Mode)---
+
+[[recipes]]
+id = "amethyst_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+amethyst_bottle = 1
+
+[[recipes]]
+id = "amethyst_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+jincao_solution = 1
+amethyst_bottle = 1
+
+[[recipes]]
+id = "amethyst_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+yazhen_solution = 1
+amethyst_bottle = 1
+
+[[recipes]]
+id = "amethyst_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+liquid_xiranite = 1
+amethyst_bottle = 1
+
+[[recipes]]
+id = "ferrium_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+ferrium_bottle = 1
+
+[[recipes]]
+id = "ferrium_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+jincao_solution = 1
+ferrium_bottle = 1
+
+[[recipes]]
+id = "ferrium_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+yazhen_solution = 1
+ferrium_bottle = 1
+
+[[recipes]]
+id = "ferrium_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+liquid_xiranite = 1
+ferrium_bottle = 1
+
+[[recipes]]
+id = "cryston_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+cryston_bottle = 1
+
+[[recipes]]
+id = "cryston_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+jincao_solution = 1
+cryston_bottle = 1
+
+[[recipes]]
+id = "cryston_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+yazhen_solution = 1
+cryston_bottle = 1
+
+[[recipes]]
+id = "cryston_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+liquid_xiranite = 1
+cryston_bottle = 1
+
+[[recipes]]
+id = "steel_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+steel_bottle = 1
+
+[[recipes]]
+id = "steel_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+jincao_solution = 1
+steel_bottle = 1
+
+[[recipes]]
+id = "steel_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+yazhen_solution = 1
+steel_bottle = 1
+
+[[recipes]]
+id = "steel_bottle"
+by = "filling_unit"
+time = 2
+out = 1
+[recipes.inputs]
+liquid_xiranite = 1
+steel_bottle = 1
+
+# --- Packaging Unit ---
+
+[[recipes]]
+id = "lc_valley_battery"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+originium_powder = 10
+amethyst_part = 5
+
+[[recipes]]
+id = "sc_valley_battery"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+originium_powder = 15
+ferrium_part = 10
+
+[[recipes]]
+id = "hc_valley_battery"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+dense_originium_powder = 15
+steel_part = 10
+
+
+[[recipes]]
+id = "lc_wuling_battery"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+dense_originium_powder = 15
+xiranite = 5
+
+[[recipes]]
+id = "industrial_explosive"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+aketine_powder = 1
+amethyst_part = 5
+
+[[recipes]]
+id = "jincao_drink"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+ferrium_bottle = 5
+amethyst_part = 10
+
+[[recipes]]
+id = "yazhen_syringe_c"
+by = "packaging_unit"
+time = 10
+out = 1
+[recipes.inputs]
+ferrium_bottle = 5
+amethyst_part = 10
+
+# --- Reactor Crucible ---
+
+[[recipes]]
+id = "jincao_solution"
+by = "reactor_crucible"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+jincao_powder = 1
+
+[[recipes]]
+id = "yazhen_solution"
+by = "reactor_crucible"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+yazhen_powder = 1
+
+[[recipes]]
+id = "liquid_xiranite"
+by = "reactor_crucible"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+xiranite = 1
 
 # --- Grinding Unit ---
 
@@ -396,7 +901,7 @@ sandleaf_powder = 1
 origocrust_powder = 2
 
 [[recipes]]
-id = "crystal_powder"
+id = "cryston_powder"
 by = "grinding_unit"
 time = 2
 out = 1
@@ -439,28 +944,6 @@ out = 1
 [recipes.inputs]
 sandleaf_powder = 1
 citrome_powder = 2
-
-# --- Packaging Unit ---
-
-[[recipes]]
-id = "sc_valley_battery"
-by = "packaging_unit"
-time = 10
-out = 1
-[recipes.inputs]
-originium_powder = 15
-ferrium_part = 10
-
-[[recipes]]
-id = "hc_valley_battery"
-by = "packaging_unit"
-time = 10
-out = 1
-[recipes.inputs]
-dense_originium_powder = 15
-steel_part = 10
-
-# --- Usables Recipes ---
 
 # --- Construct Recipes (Machines) ---
 
@@ -513,3 +996,76 @@ time = 0
 out = 1
 [recipes.inputs]
 origocrust = 5
+
+[[recipes]]
+id = "fitting_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 10
+
+[[recipes]]
+id = "moulding_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 10
+
+[[recipes]]
+id = "planting_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+carbon = 10
+amethyst_part = 20
+
+[[recipes]]
+id = "seed_picking_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+amethyst_part = 20
+
+[[recipes]]
+id = "gearing_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 10
+
+[[recipes]]
+id = "filling_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+amethyst_part = 20
+
+[[recipes]]
+id = "packaging_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+amethyst_part = 20
+
+[[recipes]]
+id = "reactor_crucible"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+ferrium_part = 20
+
+[[recipes]]
+id = "grinding_unit"
+by = "hand"
+time = 0
+out = 1
+[recipes.inputs]
+ferrium_part = 10
