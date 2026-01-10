@@ -1,8 +1,13 @@
+use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::error::Error;
 use std::fs;
 
 const PRODUCTION_TIME_WINDOW: f64 = 60.0;
+
+const RECIPE_DEFINITION_PATH: &str = "res/recipes.toml";
+const MACHINE_DEFINITION_PATH: &str = "res/machines.toml";
 
 // ---------------------------
 // Data Structures
@@ -102,17 +107,40 @@ impl ProductionNode {
     }
 }
 
+#[derive(Debug)]
+enum ProductionError {
+    FileNotFound(String),
+    ParseError(String),
+    RecipeNotFound(String),
+}
+
+impl fmt::Display for ProductionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ProductionError::FileNotFound(path) => write!(f, "File not found: {}", path),
+            ProductionError::ParseError(msg) => write!(f, "Parse error: {}", msg),
+            ProductionError::RecipeNotFound(id) => write!(f, "Recipe not found: {}", id),
+        }
+    }
+}
+
+impl Error for ProductionError {}
+
 // ---------------------------
 // Logic
 // ---------------------------
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     // 1. Load Data
-    let recipes_str = fs::read_to_string("res/recipes.toml").expect("Failed to read recipes");
-    let machines_str = fs::read_to_string("res/machines.toml").expect("Failed to read machines");
+    let recipes_str = fs::read_to_string(RECIPE_DEFINITION_PATH)
+        .map_err(|_| ProductionError::FileNotFound(RECIPE_DEFINITION_PATH.to_string()))?;
+    let machines_str = fs::read_to_string(MACHINE_DEFINITION_PATH)
+        .map_err(|_| ProductionError::FileNotFound(MACHINE_DEFINITION_PATH.to_string()))?;
 
-    let recipe_config: RecipeConfig = toml::from_str(&recipes_str).expect("Recipe Parse Error");
-    let machine_config: MachineConfig = toml::from_str(&machines_str).expect("Machine Parse Error");
+    let recipe_config: RecipeConfig = toml::from_str(&recipes_str)
+        .map_err(|e| ProductionError::ParseError(format!("recipes.toms: {}", e)))?;
+    let machine_config: MachineConfig = toml::from_str(&machines_str)
+        .map_err(|e| ProductionError::ParseError(format!("machines.toml: {}", e)))?;
 
     // Convert to HashMaps for easy lookup (ID -> Data)
     let recipes: HashMap<String, Recipe> = recipe_config
@@ -135,6 +163,13 @@ fn main() {
 
     let item_name = "sc_valley_battery";
     let production_goal = 12;
+
+    if !recipes.contains_key(item_name) {
+        return Err(Box::new(ProductionError::RecipeNotFound(
+            item_name.to_string(),
+        )));
+    }
+
     let node = plan_production(&recipes, &machines, item_name, production_goal);
 
     println!("--- Production Line Tree ---");
@@ -144,6 +179,8 @@ fn main() {
         println!(" - {}: {}", item, count);
     }
     println!("Total Power Usage: {}", node.total_power());
+
+    Ok(())
 }
 
 fn plan_production(
