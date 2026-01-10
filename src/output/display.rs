@@ -12,14 +12,10 @@ fn print_node_recursive(node: &ProductionNode, prefix: &str, is_last: bool) {
             machine_count,
             ..
         } => {
-            if node.is_source() {
-                format!("{} x{} [Source]", item_id, amount)
-            } else {
-                format!(
-                    "{} x{} [{} x{}]",
-                    item_id, amount, machine_id, machine_count
-                )
-            }
+            format!(
+                "{} x{} [{} x{}]",
+                item_id, amount, machine_id, machine_count
+            )
         }
         ProductionNode::Unresolved { item_id, .. } => {
             format!("{} [MISSING RECIPE]", item_id)
