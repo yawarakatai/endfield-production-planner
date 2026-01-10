@@ -1,0 +1,42 @@
+
+# ==========================================
+# Machine Definitions
+# Speed Unit: Percentage (100 = 1.0x standard speed)
+# Power Unit: Integer
+# ==========================================
+
+# --- The Player (Hand) ---
+[[machines]]
+id = "hand"
+power_usage = 0
+
+# --- Miners ---
+
+[[machines]]
+id = "portable_originium_rig"
+speed_percent = 50
+power_usage = 0
+
+[[machines]]
+id = "electric_mining_rig"
+speed_percent = 100
+power_usage = 5
+
+[[machines]]
+id = "electric_mining_rig_mk2"
+speed_percent = 200
+power_usage = 10
+
+# --- Smelters ---
+
+[[machines]]
+id = "refining_unit"
+power_usage = 5
+
+# --- Assemblers ---
+
+[[machines]]
+id = "fitting_unit"
+power_usage = 10
+
+# --- Equipment Parts ---
