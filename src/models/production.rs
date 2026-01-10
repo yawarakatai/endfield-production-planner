@@ -42,32 +42,52 @@ impl ProductionNode {
     }
 
     pub fn total_source_materials(&self) -> HashMap<String, u32> {
+        self.collect_totals(|node| match node {
+            ProductionNode::Resolved {
+                item_id, amount, ..
+            } => {
+                if node.is_source() {
+                    Some((item_id.clone(), *amount))
+                } else {
+                    None
+                }
+            }
+            ProductionNode::Unresolved { item_id, amount }
+            | ProductionNode::Cycle { item_id, amount } => Some((item_id.clone(), *amount)),
+        })
+    }
+
+    pub fn total_machines(&self) -> HashMap<String, u32> {
+        self.collect_totals(|node| match node {
+            ProductionNode::Resolved {
+                machine_id,
+                machine_count,
+                ..
+            } if !machine_id.is_empty() => Some((machine_id.clone(), *machine_count)),
+            _ => None,
+        })
+    }
+
+    fn collect_totals<F>(&self, extract: F) -> HashMap<String, u32>
+    where
+        F: Fn(&ProductionNode) -> Option<(String, u32)> + Copy,
+    {
         let mut totals = HashMap::new();
-        self.collect_totals(&mut totals);
+        self.collect_totals_recursive(&mut totals, extract);
         totals
     }
 
-    fn collect_totals(&self, totals: &mut HashMap<String, u32>) {
-        match self {
-            ProductionNode::Resolved {
-                item_id,
-                amount,
-                inputs,
-                ..
-            } => {
-                if self.is_source() {
-                    *totals.entry(item_id.clone()).or_insert(0) += amount;
-                } else {
-                    for child in inputs {
-                        child.collect_totals(totals);
-                    }
-                }
-            }
-            ProductionNode::Unresolved { item_id, amount } => {
-                *totals.entry(item_id.clone()).or_insert(0) += amount;
-            }
-            ProductionNode::Cycle { item_id, amount } => {
-                *totals.entry(item_id.clone()).or_insert(0) += amount;
+    fn collect_totals_recursive<F>(&self, totals: &mut HashMap<String, u32>, extract: F)
+    where
+        F: Fn(&ProductionNode) -> Option<(String, u32)> + Copy,
+    {
+        if let Some((key, value)) = extract(self) {
+            *totals.entry(key).or_insert(0) += value;
+        }
+
+        if let ProductionNode::Resolved { inputs, .. } = self {
+            for child in inputs {
+                child.collect_totals_recursive(totals, extract);
             }
         }
     }
