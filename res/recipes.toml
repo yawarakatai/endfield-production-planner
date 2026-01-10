@@ -6,7 +6,7 @@
 # --- Naturals Recipes ---
 
 [[recipes]]
-id = "inpure_originium_ore"
+id = "originium_ore"
 by = [
   "portable_originium_rig",
   "electric_mining_rig",
@@ -17,41 +17,17 @@ time = 2
 originium_ore = 1
 
 [[recipes]]
-id = "pure_originium_ore"
-by = [
-  "portable_originium_rig",
-  "electric_mining_rig",
-  "electric_mining_rig_mk2",
-]
-time = 1
-[recipes.outputs]
-originium_ore = 1
-
-[[recipes]]
-id = "inpure_amethyst_ore"
+id = "amethyst_ore"
 by = ["electric_mining_rig", "electric_mining_rig_mk2"]
 time = 2
 [recipes.outputs]
 amethyst_ore = 1
 
-[[recipes]]
-id = "pure_amethyst_ore"
-by = ["electric_mining_rig", "electric_mining_rig_mk2"]
-time = 1
-[recipes.outputs]
-amethyst_ore = 1
 
 [[recipes]]
-id = "inpure_ferrium_ore"
+id = "ferrium_ore"
 by = ["electric_mining_rig_mk2"]
 time = 2
-[recipes.outputs]
-ferrium_ore = 1
-
-[[recipes]]
-id = "pure_ferrium_ore"
-by = ["electric_mining_rig_mk2"]
-time = 1
 [recipes.outputs]
 ferrium_ore = 1
 
@@ -85,13 +61,32 @@ ferrium_ore = 1
 ferrium = 1
 
 [[recipes]]
-id = "iron_parts"
+id = "ferrium_part"
 by = ["fitting_unit"]
 time = 2
 [recipes.inputs]
 ferrium = 1
 [recipes.outputs]
-iron_parts = 1
+ferrium_part = 1
+
+[[recipes]]
+id = "originium_powder"
+by = ["shredding_unit"]
+time = 2
+[recipes.inputs]
+originium_ore = 1
+[recipes.outputs]
+originium_powder = 1
+
+[[recipes]]
+id = "sc_valley_battery"
+by = ["packaging_unit"]
+time = 10
+[recipes.inputs]
+originium_powder = 15
+ferrium_part = 10
+[recipes.outputs]
+sc_valley_battery = 1
 
 # --- Usables Recipes ---
 
