@@ -12,10 +12,14 @@ pub fn plan_production(
 ) -> ProductionNode {
     // Detect circular reference
     if visiting.contains(item_id) {
-        eprintln!("Warning: Cycle detected for {}", item_id);
-        return ProductionNode::Cycle {
+        return ProductionNode::Resolved {
             item_id: item_id.to_string(),
+            machine_id: "Loop Source".to_string(),
             amount,
+            machine_count: 0,
+            power_usage: 0,
+            load: 0.0,
+            inputs: Vec::new(),
         };
     }
 
@@ -47,7 +51,7 @@ pub fn plan_production(
             })
     });
 
-    if let Some(recipe) = selected_recipe {
+    let result = if let Some(recipe) = selected_recipe {
         let (machine_id, power) = match machines.get(&recipe.by) {
             Some(m) => (m.id.clone(), m.power),
             None => ("manual".to_string(), 0),
@@ -82,7 +86,7 @@ pub fn plan_production(
             })
             .collect();
 
-        return ProductionNode::Resolved {
+        ProductionNode::Resolved {
             item_id: item_id.to_string(),
             machine_id,
             amount,
@@ -90,14 +94,16 @@ pub fn plan_production(
             load,
             power_usage: (power as u64 * machine_count as u64).min(u32::MAX as u64) as u32,
             inputs: children,
-        };
-    }
+        }
+    } else {
+        ProductionNode::Unresolved {
+            item_id: item_id.to_string(),
+            amount,
+        }
+    };
 
     // Backtrack
     visiting.remove(item_id);
 
-    ProductionNode::Unresolved {
-        item_id: item_id.to_string(),
-        amount,
-    }
+    result
 }
