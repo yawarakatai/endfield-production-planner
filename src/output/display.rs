@@ -1,7 +1,47 @@
 use crate::models::ProductionNode;
 
-fn print_production_tree(node: &ProductionNode, depth: usize) {
-    let indent = "  ".repeat(depth);
+fn print_node_recursive(node: &ProductionNode, prefix: &str, is_last: bool) {
+    let connector = if is_last { "└── " } else { "├── " };
+    let child_prefix = if is_last { "    " } else { "│   " };
+
+    let node_info = match node {
+        ProductionNode::Resolved {
+            item_id,
+            machine_id,
+            amount,
+            machine_count,
+            ..
+        } => {
+            if node.is_source() {
+                format!("{} x{} [Source]", item_id, amount)
+            } else {
+                format!(
+                    "{} x{} [{} x{}]",
+                    item_id, amount, machine_id, machine_count
+                )
+            }
+        }
+        ProductionNode::Unresolved { item_id, .. } => {
+            format!("{} [MISSING RECIPE]", item_id)
+        }
+        ProductionNode::Cycle { item_id, .. } => {
+            format!("{} [CYCLE DETECTED]", item_id)
+        }
+    };
+
+    println!("{}{}{}", prefix, connector, node_info);
+
+    if let ProductionNode::Resolved { inputs, .. } = node {
+        let count = inputs.len();
+        for (i, child) in inputs.iter().enumerate() {
+            let is_last_child = i == count - 1;
+            print_node_recursive(child, &format!("{}{}", prefix, child_prefix), is_last_child);
+        }
+    }
+}
+
+pub fn print_summary(node: &ProductionNode) {
+    println!("--- Production Line Tree ---");
 
     match node {
         ProductionNode::Resolved {
@@ -12,34 +52,18 @@ fn print_production_tree(node: &ProductionNode, depth: usize) {
             inputs,
             ..
         } => {
-            if node.is_source() {
-                println!(
-                    "{}[Source] {} x{} (via: {} x{})",
-                    indent, item_id, amount, machine_id, machine_count
-                );
-            } else {
-                println!(
-                    "{}[Craft] {} x{} (via: {} x{})",
-                    indent, item_id, amount, machine_id, machine_count
-                );
+            println!(
+                "{} x{} [{} x{}]",
+                item_id, amount, machine_id, machine_count
+            );
 
-                for child in inputs {
-                    print_production_tree(child, depth + 1)
-                }
+            let count = inputs.len();
+            for (i, child) in inputs.iter().enumerate() {
+                print_node_recursive(child, "", i == count - 1);
             }
         }
-        ProductionNode::Unresolved { item_id, .. } => {
-            println!("{}[MISSING] No recipe for {}", indent, item_id)
-        }
-        ProductionNode::Cycle { item_id, .. } => {
-            println!("{}[CYCLE!] Loop detected at {}", indent, item_id);
-        }
+        _ => println!("Invalid root node"),
     }
-}
-
-pub fn print_summary(node: &ProductionNode) {
-    println!("--- Production Line Tree ---");
-    print_production_tree(node, 0);
 
     println!("\nTotal Raw Materials Needed:");
     for (item, count) in node.total_source_materials() {
