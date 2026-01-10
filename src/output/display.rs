@@ -46,5 +46,10 @@ pub fn print_summary(node: &ProductionNode) {
         println!(" - {}: {}", item, count);
     }
 
-    println!("\nTotal Power: {}", node.total_power());
+    println!("\nTotal Machines Needed:");
+    for (machine, count) in node.total_machines() {
+        println!(" - {}: {}", machine, count);
+    }
+
+    println!("\nTotal Power Needed: {}", node.total_power());
 }
