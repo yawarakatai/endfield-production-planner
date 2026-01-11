@@ -113,32 +113,34 @@ fn App() -> impl IntoView {
 
                 // アイテムリスト（検索結果）
                 <div style="flex-grow: 1; border: 1px solid #ddd; border-radius: 8px; overflow-y: auto; max-height: 70vh;">
-                    <For
+                     <For
                         each=filtered_items
                         key=|item| item.clone()
                         children=move |item| {
-                            // 現在選択されているか判定
-                            let is_selected = selected_item.get() == item;
-                            let bg_color = if is_selected { "#e3f2fd" } else { "white" };
-                            let cursor = if is_selected { "default" } else { "pointer" };
+                            // itemの所有権を複製（クロージャ内で使うため）
+                            let item_for_click = item.clone();
+                            let item_for_style = item.clone();
 
-                            // アイテムごとのクリックハンドラ
-                            // clone()が必要なのは、moveクロージャ内で所有権を持つため
-                            let item_clone = item.clone();
-                            let on_click = move |_| set_selected_item.set(item_clone.clone());
+                            let on_click = move |_| set_selected_item.set(item_for_click.clone());
 
                             view! {
                                 <div
                                     on:click=on_click
-                                    style=format!("padding: 8px 12px; border-bottom: 1px solid #eee; background: {}; cursor: {};", bg_color, cursor)
+                                    // 【修正後】 style全体を move || で囲み、選択状態が変わるたびに文字列を作り直す
+                                    style=move || {
+                                        let is_selected = selected_item.get() == item_for_style;
+                                        let bg_color = if is_selected { "#e3f2fd" } else { "white" };
+                                        let cursor = if is_selected { "default" } else { "pointer" };
+                                        format!("padding: 8px 12px; border-bottom: 1px solid #eee; background: {}; cursor: {};", bg_color, cursor)
+                                    }
                                 >
                                     {item}
                                 </div>
                             }
                         }
                     />
+                   </div>
                 </div>
-            </div>
 
             // --- メインエリア: ツリー表示 ---
             <div style="flex-grow: 1;">
@@ -152,7 +154,7 @@ fn App() -> impl IntoView {
 
                 <div class="production-tree">
                     // Memo化した計算結果を渡す
-                    <TreeView node=production_plan.get() />
+                    {move || view! {<TreeView node=production_plan.get() />}}
                 </div>
             </div>
         </div>
