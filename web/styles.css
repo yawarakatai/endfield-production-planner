@@ -545,11 +545,21 @@ body {
 }
 
 .tree-machine {
-  color: var(--color-text-secondary);
+  display: inline-flex;
+  align-items: center;
   margin-left: var(--spacing-sm);
+  padding: 1px 8px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px; 
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-secondary);
 }
 
 .tree-machine.missing {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-color: rgba(244, 67, 54, 0.3);
   color: var(--color-error);
 }
 

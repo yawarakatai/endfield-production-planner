@@ -22,9 +22,8 @@ pub fn tree_view(
             inputs,
             ..
         } => {
-            let item_name = machine_ids.with_value(|ids| {
-                get_localized_name(&item_id, &localizer, ids)
-            });
+            let item_name =
+                machine_ids.with_value(|ids| get_localized_name(&item_id, &localizer, ids));
             let machine_name = localizer.get_machine(&machine_id);
             let localizer_clone = localizer.clone();
             let child_count = inputs.len();
@@ -50,7 +49,7 @@ pub fn tree_view(
                         " ×"{amount}
                     </span>
                     <span class="tree-machine">
-                        "[" {machine_name} " ×" {machine_count} "]"
+                         {machine_name} " ×" {machine_count}
                     </span>
                 </div>
                 {
@@ -72,9 +71,8 @@ pub fn tree_view(
             .into_any()
         }
         ProductionNode::Unresolved { item_id, amount } => {
-            let item_name = machine_ids.with_value(|ids| {
-                get_localized_name(&item_id, &localizer, ids)
-            });
+            let item_name =
+                machine_ids.with_value(|ids| get_localized_name(&item_id, &localizer, ids));
             let missing_text = localizer.get_ui("missing_recipe");
 
             let prefix_str: String = prefix

@@ -333,7 +333,7 @@ pub fn app() -> impl IntoView {
                                                     " ×"{*amount}
                                                 </span>
                                                 <span class="tree-machine">
-                                                    "[" {machine_name} " ×" {*machine_count} "]"
+                                                    {machine_name} " ×" {*machine_count}
                                                 </span>
                                             </div>
                                             {
