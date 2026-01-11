@@ -29,10 +29,11 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Build with Trunk
+        working-directory: ./web
         run: trunk build --release --public-url "${{ github.event.repository.name }}"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./web/dist
