@@ -516,6 +516,18 @@ body {
   white-space: pre;
   font-family: var(--font-mono);
   font-size: 0.875rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.1s;
+}
+
+.tree-line.tree-missing {
+  background-color: rgba(244, 67, 54, 0.05);
+  border-radius: 4px;
+}
+
+.tree-line:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .tree-prefix,
