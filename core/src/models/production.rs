@@ -27,11 +27,24 @@ impl ProductionNode {
     }
 
     pub fn utilization(&self) -> u32 {
+        let utilization = self.total_utilization();
+
+        (utilization * 100.0).round().clamp(0.0, 100.0) as u32
+    }
+
+    fn total_utilization(&self) -> f64 {
         match self {
-            ProductionNode::Resolved { load, .. } => {
-                (*load * 100.0).round().clamp(0.0, 100.0) as u32
+            ProductionNode::Resolved { load, inputs, .. } => {
+                if self.is_source() {
+                    *load
+                } else {
+                    load * inputs
+                        .iter()
+                        .map(|child| child.total_utilization())
+                        .product::<f64>()
+                }
             }
-            _ => 0,
+            _ => 0.0,
         }
     }
 
@@ -41,7 +54,7 @@ impl ProductionNode {
                 power_usage,
                 inputs,
                 ..
-            } => power_usage + inputs.iter().map(|n| n.total_power()).sum::<u32>(),
+            } => power_usage + inputs.iter().map(|child| child.total_power()).sum::<u32>(),
             _ => 0,
         }
     }
