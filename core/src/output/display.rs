@@ -59,8 +59,8 @@ pub fn print_summary(node: &ProductionNode) {
     }
 
     println!("\nTotal Raw Materials Needed:");
-    for (item, count) in node.total_source_materials() {
-        println!(" - {}: {}", item, count);
+    for (item, count) in node.total_source_materials().iter() {
+        println!(" - {}: {} (per minute)", item, count);
     }
 
     println!("\nTotal Machines Needed:");
