@@ -2,7 +2,7 @@
 
 ![Screenshot](screenshot.webp)
 
-### [Live Demo Here / こちらから利用できます](https://yawarakatai.github.io/resource-calculator-endfield/)
+### [Live Demo Here / こちらから利用できます](https://yawarakatai.github.io/endfield-production-planner/)
 
 A production calculator for **Arknights: Endfield**.
 Calculate the resources, machines, and power needed to produce any item.
