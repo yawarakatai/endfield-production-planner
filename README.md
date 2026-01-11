@@ -2,7 +2,7 @@
 
 ![Screenshot](screenshot.webp)
 
-**[Live Demo](https://your-username.github.io/resource-calculator-endfield/)**
+👉 **[](https://yawarakatai.github.io/resource-calculator-endfield/)**
 
 A production calculator for **Arknights: Endfield**.
 Calculate the resources, machines, and power needed to produce any item.
