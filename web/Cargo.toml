@@ -7,3 +7,4 @@ edition = "2024"
 resource_calculator_core = { path = "../core" }
 leptos = { version = "0.8.15", features = ["csr"] }
 console_error_panic_hook = "0.1"
+web-sys = { version = "0.3.83", features = ["Navigator"] }
