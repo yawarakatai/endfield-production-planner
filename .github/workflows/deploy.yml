@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with Trunk
         working-directory: ./web
-        run: trunk build --release --public-url "${{ github.event.repository.name }}"
+        run: trunk build --release --public-url "/${{ github.event.repository.name }}/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
