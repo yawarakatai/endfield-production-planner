@@ -23,7 +23,14 @@
             rust-analyzer
             clippy
             rustfmt
+            trunk
+            lld
+            wasm-bindgen-cli
           ];
+
+          shellHook = ''
+            rustup target add wasm32-unknown-unknown 2>/dev/null || true
+          '';
         };
       }
     );
