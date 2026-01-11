@@ -144,8 +144,67 @@ fn App() -> impl IntoView {
 
             // --- メインエリア: ツリー表示 ---
             <div style="flex-grow: 1;">
+                <h1 style="margin: 0;">"Production Plan"</h1>
+
+                // --- 追加: 集計情報の表示エリア ---
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
+
+                    // 1. 原材料 (Raw Materials)
+                    <div style="flex: 1; min-width: 200px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                        <h4 style="margin-top: 0; border-bottom: 2px solid #ddd; padding-bottom: 5px;">"Total Raw Materials"</h4>
+                        {move || {
+                            // 計算結果を取得
+                            let node = production_plan.get();
+                            let mut materials: Vec<_> = node.total_source_materials().into_iter().collect();
+                            materials.sort_by(|a, b| a.0.cmp(&b.0)); // 名前順にソート
+
+                            if materials.is_empty() {
+                                view! { <div style="color: #999;">"None"</div> }.into_any()
+                            } else {
+                                view! {
+                                    <ul style="padding-left: 20px; margin: 0;">
+                                        {materials.into_iter().map(|(name, count)| {
+                                            view! { <li>{name} ": " <strong>{count}</strong></li> }
+                                        }).collect_view()}
+                                    </ul>
+                                }.into_any()
+                            }
+                        }}
+                    </div>
+
+                    // 2. 機械 (Machines)
+                    <div style="flex: 1; min-width: 200px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                        <h4 style="margin-top: 0; border-bottom: 2px solid #ddd; padding-bottom: 5px;">"Total Machines"</h4>
+                        {move || {
+                            let node = production_plan.get();
+                            let mut machines: Vec<_> = node.total_machines().into_iter().collect();
+                            machines.sort_by(|a, b| a.0.cmp(&b.0));
+
+                            if machines.is_empty() {
+                                view! { <div style="color: #999;">"None"</div> }.into_any()
+                            } else {
+                                view! {
+                                    <ul style="padding-left: 20px; margin: 0;">
+                                        {machines.into_iter().map(|(name, count)| {
+                                            view! { <li>{name} ": " <strong>{count}</strong></li> }
+                                        }).collect_view()}
+                                    </ul>
+                                }.into_any()
+                            }
+                        }}
+                    </div>
+
+                    // 3. 電力 (Power)
+                    <div style="flex: 1; min-width: 200px; background: #fffbe6; padding: 15px; border-radius: 8px; border: 1px solid #faad14;">
+                        <h4 style="margin-top: 0; border-bottom: 2px solid #faad14; padding-bottom: 5px; color: #d48806;">"Total Power"</h4>
+                        <div style="font-size: 2em; font-weight: bold; color: #d48806; text-align: center; margin-top: 10px;">
+                            {move || production_plan.get().total_power()}
+                            <span style="font-size: 0.5em; margin-left: 5px;">"Units"</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="margin-bottom: 20px;">
-                    <h1 style="margin: 0;">"Production Plan"</h1>
                     <p style="color: #666;">
                         "Target: " <strong>{move || selected_item.get()}</strong>
                         " x" {move || target_amount.get()} "/min"
@@ -153,8 +212,7 @@ fn App() -> impl IntoView {
                 </div>
 
                 <div class="production-tree">
-                    // Memo化した計算結果を渡す
-                    {move || view! {<TreeView node=production_plan.get() />}}
+                    {move || view! { <TreeView node=production_plan.get() /> }}
                 </div>
             </div>
         </div>
