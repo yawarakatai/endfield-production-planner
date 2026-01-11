@@ -26,6 +26,15 @@ impl ProductionNode {
         }
     }
 
+    pub fn utilization(&self) -> u32 {
+        match self {
+            ProductionNode::Resolved { load, .. } => {
+                (*load * 100.0).round().clamp(0.0, 100.0) as u32
+            }
+            _ => 0,
+        }
+    }
+
     pub fn total_power(&self) -> u32 {
         match self {
             ProductionNode::Resolved {
