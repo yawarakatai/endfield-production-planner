@@ -2,15 +2,13 @@
 
 ![Screenshot](screenshot.webp)
 
-👉 **[](https://yawarakatai.github.io/resource-calculator-endfield/)**
+### [Live Demo Here / こちらから利用できます](https://yawarakatai.github.io/resource-calculator-endfield/)
 
 A production calculator for **Arknights: Endfield**.
 Calculate the resources, machines, and power needed to produce any item.
 
 **アークナイツ：エンドフィールド** の生産計算機です。
 任意のアイテムの生産に必要な素材・機械・電力を計算できます。
-
----
 
 ## Features / 機能
 
