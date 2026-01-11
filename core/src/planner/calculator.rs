@@ -40,7 +40,7 @@ pub fn calculate(
     let load = if machine_count > 0 {
         required_machines / machine_count as f64
     } else {
-        0.0
+        1.0
     };
 
     let power_usage = (power as u64 * machine_count as u64).min(u32::MAX as u64) as u32;
