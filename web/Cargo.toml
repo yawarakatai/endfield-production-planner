@@ -1,0 +1,9 @@
+[package]
+name = "resource_calculator_web"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+resource_calculator_core = { path = "../core" }
+leptos = { version = "0.8.15", features = ["csr"] }
+console_error_panic_hook = "0.1"
