@@ -300,71 +300,73 @@ pub fn app() -> impl IntoView {
                 </div>
 
                 // Tree view
-                <div class="target-info">
-                    <p>
-                        {move || current_localizer.get().get_ui("target")} ": " <strong>{move || {
-                            let localizer = current_localizer.get();
-                            let item_id = selected_item.get();
-                            machine_ids_store.with_value(|machine_ids| {
-                                get_localized_name(&item_id, &localizer, machine_ids)
-                            })
-                        }}</strong>
-                        " x" {move || target_amount.get()} {move || current_localizer.get().get_ui("per_min")}
-                    </p>
-                </div>
+                <div class="production-group">
+                    <div class="target-info">
+                        <p>
+                            {move || current_localizer.get().get_ui("target")} ": " <strong>{move || {
+                                let localizer = current_localizer.get();
+                                let item_id = selected_item.get();
+                                machine_ids_store.with_value(|machine_ids| {
+                                    get_localized_name(&item_id, &localizer, machine_ids)
+                                })
+                            }}</strong>
+                            " x" {move || target_amount.get()} {move || current_localizer.get().get_ui("per_min")}
+                        </p>
+                    </div>
 
-                <div class="production-tree">
-                    {move || {
-                        let node = production_plan.get();
-                        let localizer = current_localizer.get();
-                        match &node {
-                            ProductionNode::Resolved { item_id, machine_id, amount, machine_count, inputs, .. } => {
-                                let item_name = machine_ids_store.with_value(|machine_ids| {
-                                    get_localized_name(item_id, &localizer, machine_ids)
-                                });
-                                let machine_name = localizer.get_machine(machine_id);
-                                let child_count = inputs.len();
-                                view! {
-                                    <div class="tree-root">
-                                        <div class="tree-line tree-root-line">
-                                            <span class="tree-item">
-                                                <strong>{item_name}</strong>
-                                                " ×"{*amount}
-                                            </span>
-                                            <span class="tree-machine">
-                                                "[" {machine_name} " ×" {*machine_count} "]"
-                                            </span>
+                    <div class="production-tree">
+                        {move || {
+                            let node = production_plan.get();
+                            let localizer = current_localizer.get();
+                            match &node {
+                                ProductionNode::Resolved { item_id, machine_id, amount, machine_count, inputs, .. } => {
+                                    let item_name = machine_ids_store.with_value(|machine_ids| {
+                                        get_localized_name(item_id, &localizer, machine_ids)
+                                    });
+                                    let machine_name = localizer.get_machine(machine_id);
+                                    let child_count = inputs.len();
+                                    view! {
+                                        <div class="tree-root">
+                                            <div class="tree-line tree-root-line">
+                                                <span class="tree-item">
+                                                    <strong>{item_name}</strong>
+                                                    " ×"{*amount}
+                                                </span>
+                                                <span class="tree-machine">
+                                                    "[" {machine_name} " ×" {*machine_count} "]"
+                                                </span>
+                                            </div>
+                                            {
+                                                inputs.clone().into_iter().enumerate().map(move |(i, child)| {
+                                                    let is_last = i == child_count - 1;
+                                                    view! {
+                                                        <TreeView
+                                                            node=child
+                                                            localizer=localizer.clone()
+                                                            machine_ids=machine_ids_store
+                                                            is_last=is_last
+                                                            prefix=vec![]
+                                                        />
+                                                    }
+                                                }).collect_view()
+                                            }
                                         </div>
-                                        {
-                                            inputs.clone().into_iter().enumerate().map(move |(i, child)| {
-                                                let is_last = i == child_count - 1;
-                                                view! {
-                                                    <TreeView
-                                                        node=child
-                                                        localizer=localizer.clone()
-                                                        machine_ids=machine_ids_store
-                                                        is_last=is_last
-                                                        prefix=vec![]
-                                                    />
-                                                }
-                                            }).collect_view()
-                                        }
-                                    </div>
-                                }.into_any()
+                                    }.into_any()
+                                }
+                                ProductionNode::Unresolved { item_id, amount } => {
+                                    let item_name = machine_ids_store.with_value(|machine_ids| {
+                                        get_localized_name(item_id, &localizer, machine_ids)
+                                    });
+                                    view! {
+                                        <div class="tree-line tree-missing">
+                                            <span class="tree-item">{item_name} " ×" {*amount}</span>
+                                            <span class="tree-machine missing">"[" {localizer.get_ui("missing_recipe")} "]"</span>
+                                        </div>
+                                    }.into_any()
+                                }
                             }
-                            ProductionNode::Unresolved { item_id, amount } => {
-                                let item_name = machine_ids_store.with_value(|machine_ids| {
-                                    get_localized_name(item_id, &localizer, machine_ids)
-                                });
-                                view! {
-                                    <div class="tree-line tree-missing">
-                                        <span class="tree-item">{item_name} " ×" {*amount}</span>
-                                        <span class="tree-machine missing">"[" {localizer.get_ui("missing_recipe")} "]"</span>
-                                    </div>
-                                }.into_any()
-                            }
-                        }
-                    }}
+                        }}
+                    </div>
                 </div>
             </div>
         </div>

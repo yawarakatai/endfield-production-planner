@@ -415,6 +415,22 @@ body {
 }
 
 /* ===== Production Tree ===== */
+.production-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.production-group .target-info {
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.production-groun .production-tree {
+  border-top: none;
+}
+
 .production-tree {
   flex: 1;
   overflow-y: auto;
@@ -535,6 +551,23 @@ body {
   margin-bottom: var(--spacing-sm);
   padding-bottom: var(--spacing-sm);
   border-bottom: 1px solid var(--color-border-light);
+}
+
+/* ==== Production Tree Animation ==== */
+@keyframes slideInFade {
+  from {
+    opacity: 0,
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tree-line {
+  opacity: 0;
+  animation: slideInFade 0.3s ease-out forwards;
 }
 
 /* ===== Scrollbar Styling ===== */
