@@ -1,0 +1,53 @@
+# Japanese locale for Endfield Production Planner
+
+[items]
+# Raw resources
+originium_ore = "源石鉱"
+amethyst_ore = "紫晶鉱"
+ferrium_ore = "フェリウム鉱"
+clean_water = "清水"
+jincao_solution = "金草溶液"
+yazhen_solution = "芽蓁溶液"
+
+# Processed materials
+origocrust = "源石殻"
+amethyst_fiber = "紫晶繊維"
+ferrium = "フェリウム"
+carbon = "炭素"
+steel = "鋼"
+
+# Add more items as needed...
+
+[machines]
+hand = "手作業"
+portable_originium_rig = "携帯源石採掘機"
+electric_mining_rig = "電動採掘機"
+electric_mining_rig_mk2 = "電動採掘機 Mk2"
+fluid_pump = "液体ポンプ"
+refining_unit = "精製ユニット"
+shredding_unit = "粉砕ユニット"
+fitting_unit = "成形ユニット"
+moulding_unit = "鋳造ユニット"
+planting_unit = "栽培ユニット"
+seed_picking_unit = "採種ユニット"
+gearing_unit = "組立ユニット"
+filling_unit = "充填ユニット"
+packaging_unit = "梱包ユニット"
+reactor_crucible = "反応炉"
+grinding_unit = "研磨ユニット"
+
+[ui]
+app_title = "Endfield 生産プランナー"
+settings = "設定"
+amount_per_min = "生産量 (/分)"
+search_item = "アイテム検索"
+search_placeholder = "入力して絞り込み..."
+production_plan = "生産計画"
+total_raw_materials = "必要な原材料"
+total_machines = "必要な機械"
+total_power = "総消費電力"
+power_unit = "ユニット"
+target = "目標"
+per_min = "/分"
+none = "なし"
+missing_recipe = "レシピなし"

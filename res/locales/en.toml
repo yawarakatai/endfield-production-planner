@@ -1,0 +1,53 @@
+# English locale for Endfield Production Planner
+
+[items]
+# Raw resources
+originium_ore = "Originium Ore"
+amethyst_ore = "Amethyst Ore"
+ferrium_ore = "Ferrium Ore"
+clean_water = "Clean Water"
+jincao_solution = "Jincao Solution"
+yazhen_solution = "Yazhen Solution"
+
+# Processed materials
+origocrust = "Origocrust"
+amethyst_fiber = "Amethyst Fiber"
+ferrium = "Ferrium"
+carbon = "Carbon"
+steel = "Steel"
+
+# Add more items as needed...
+
+[machines]
+hand = "Hand"
+portable_originium_rig = "Portable Originium Rig"
+electric_mining_rig = "Electric Mining Rig"
+electric_mining_rig_mk2 = "Electric Mining Rig Mk2"
+fluid_pump = "Fluid Pump"
+refining_unit = "Refining Unit"
+shredding_unit = "Shredding Unit"
+fitting_unit = "Fitting Unit"
+moulding_unit = "Moulding Unit"
+planting_unit = "Planting Unit"
+seed_picking_unit = "Seed Picking Unit"
+gearing_unit = "Gearing Unit"
+filling_unit = "Filling Unit"
+packaging_unit = "Packaging Unit"
+reactor_crucible = "Reactor Crucible"
+grinding_unit = "Grinding Unit"
+
+[ui]
+app_title = "Endfield Production Planner"
+settings = "Settings"
+amount_per_min = "Amount (/min)"
+search_item = "Search Item"
+search_placeholder = "Type to filter..."
+production_plan = "Production Plan"
+total_raw_materials = "Total Raw Materials"
+total_machines = "Total Machines"
+total_power = "Total Power"
+power_unit = "Units"
+target = "Target"
+per_min = "/min"
+none = "None"
+missing_recipe = "MISSING RECIPE"
