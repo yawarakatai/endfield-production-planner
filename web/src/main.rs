@@ -1,8 +1,9 @@
 use leptos::prelude::*;
 use resource_calculator_core::config::GameData;
+use resource_calculator_core::i18n::{Locale, Localizer};
 use resource_calculator_core::models::ProductionNode;
 use resource_calculator_core::planner::plan_production;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 fn main() {
     leptos::mount::mount_to_body(|| view! { <App/> })
@@ -14,6 +15,17 @@ fn app() -> impl IntoView {
     let recipes_str = include_str!("../../res/recipes.toml");
     let machines_str = include_str!("../../res/machines.toml");
     let game_data = GameData::new(recipes_str, machines_str).expect("Failed to load data");
+
+    // Load locales
+    let en_locale = include_str!("../../res/locales/en.toml");
+    let ja_locale = include_str!("../../res/locales/ja.toml");
+
+    let localizers: HashMap<Locale, Localizer> = [
+        (Locale::English, Localizer::new(en_locale).expect("Failed to load English locale")),
+        (Locale::Japanese, Localizer::new(ja_locale).expect("Failed to load Japanese locale")),
+    ]
+    .into_iter()
+    .collect();
 
     let mut all_items: Vec<String> = game_data.recipes_by_output.keys().cloned().collect();
     all_items.sort();
@@ -27,6 +39,12 @@ fn app() -> impl IntoView {
             .cloned()
             .unwrap_or_else(|| "originium_ore".to_string()),
     );
+    let (current_locale, set_current_locale) = signal(Locale::English);
+
+    // Create a memo for the current localizer
+    let current_localizer = Memo::new(move |_| {
+        localizers.get(&current_locale.get()).unwrap().clone()
+    });
 
     // Filter item list by a query
     let filtered_items = move || {
@@ -60,16 +78,37 @@ fn app() -> impl IntoView {
 
     //  Construct view
     view! {
-        <div style="font-family: sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; display: flex; gap: 20px;">
+        <div class="app-container">
 
-            // Left side bar
-            <div style="width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px;">
-                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
-                    <h3>"Settings"</h3>
+            // Left sidebar
+            <div class="sidebar">
+                <div class="settings-panel">
+                    <h3>{move || current_localizer.get().get_ui("settings")}</h3>
+
+                    // Language selector
+                    <div class="form-group">
+                        <label class="form-label">"Language"</label>
+                        <select
+                            class="form-input"
+                            on:change=move |ev| {
+                                let value = event_target_value(&ev);
+                                if let Some(locale) = Locale::from_code(&value) {
+                                    set_current_locale.set(locale);
+                                }
+                            }
+                        >
+                            <option value="en" selected=move || current_locale.get() == Locale::English>
+                                "English"
+                            </option>
+                            <option value="ja" selected=move || current_locale.get() == Locale::Japanese>
+                                "日本語"
+                            </option>
+                        </select>
+                    </div>
 
                     // Input value
-                    <div style="margin-bottom: 10px;">
-                        <label style="display:block; font-size: 0.9em; margin-bottom: 4px;">"Amount (/min)"</label>
+                    <div class="form-group">
+                        <label class="form-label">{move || current_localizer.get().get_ui("amount_per_min")}</label>
                         <input
                             type="number"
                             min="1"
@@ -79,45 +118,48 @@ fn app() -> impl IntoView {
                                     set_target_amount.set(val);
                                 }
                             }
-                            style="width: 100%; padding: 5px;"
+                            class="form-input"
                         />
                     </div>
 
                     // Item search
                     <div>
-                        <label style="display:block; font-size: 0.9em; margin-bottom: 4px;">"Search Item"</label>
+                        <label class="form-label">{move || current_localizer.get().get_ui("search_item")}</label>
                         <input
                             type="text"
-                            placeholder="Type to filter..."
+                            placeholder=move || current_localizer.get().get_ui("search_placeholder")
                             prop:value=move || search_query.get()
                             on:input=move |ev| set_search_query.set(event_target_value(&ev))
-                            style="width: 100%; padding: 5px;"
+                            class="form-input"
                         />
                     </div>
                 </div>
 
                 // Item list
-                <div style="flex-grow: 1; border: 1px solid #ddd; border-radius: 8px; overflow-y: auto; max-height: 70vh;">
+                <div class="item-list">
                      <For
                         each=filtered_items
                         key=|item| item.clone()
                         children=move |item| {
                             let item_for_click = item.clone();
-                            let item_for_style = item.clone();
+                            let item_for_class = item.clone();
+                            let item_for_display = item.clone();
 
                             let on_click = move |_| set_selected_item.set(item_for_click.clone());
 
                             view! {
                                 <div
                                     on:click=on_click
-                                    style=move || {
-                                        let is_selected = selected_item.get() == item_for_style;
-                                        let bg_color = if is_selected { "#e3f2fd" } else { "white" };
-                                        let cursor = if is_selected { "default" } else { "pointer" };
-                                        format!("padding: 8px 12px; border-bottom: 1px solid #eee; background: {}; cursor: {};", bg_color, cursor)
+                                    class=move || {
+                                        let is_selected = selected_item.get() == item_for_class;
+                                        if is_selected {
+                                            "item-list-entry selected"
+                                        } else {
+                                            "item-list-entry"
+                                        }
                                     }
                                 >
-                                    {item}
+                                    {move || current_localizer.get().get_item(&item_for_display)}
                                 </div>
                             }
                         }
@@ -125,28 +167,30 @@ fn app() -> impl IntoView {
                    </div>
                 </div>
 
-            // Center area
-            <div style="flex-grow: 1;">
-                <h1 style="margin: 0;">"Production Plan"</h1>
+            // Main content
+            <div class="main-content">
+                <h1>{move || current_localizer.get().get_ui("production_plan")}</h1>
 
                 // Total values
-                <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
+                <div class="summary-container">
 
                     // Raw Materials
-                    <div style="flex: 1; min-width: 200px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-                        <h4 style="margin-top: 0; border-bottom: 2px solid #ddd; padding-bottom: 5px;">"Total Raw Materials"</h4>
+                    <div class="summary-card">
+                        <h4>{move || current_localizer.get().get_ui("total_raw_materials")}</h4>
                         {move || {
+                            let localizer = current_localizer.get();
                             let node = production_plan.get();
                             let mut materials: Vec<_> = node.total_source_materials().into_iter().collect();
                             materials.sort_by(|a, b| a.0.cmp(&b.0));
 
                             if materials.is_empty() {
-                                view! { <div style="color: #999;">"None"</div> }.into_any()
+                                view! { <div class="empty">{localizer.get_ui("none")}</div> }.into_any()
                             } else {
                                 view! {
-                                    <ul style="padding-left: 20px; margin: 0;">
+                                    <ul>
                                         {materials.into_iter().map(|(name, count)| {
-                                            view! { <li>{name} ": " <strong>{count}</strong></li> }
+                                            let display_name = localizer.get_item(&name);
+                                            view! { <li>{display_name} ": " <strong>{count}</strong></li> }
                                         }).collect_view()}
                                     </ul>
                                 }.into_any()
@@ -155,20 +199,22 @@ fn app() -> impl IntoView {
                     </div>
 
                     // Machines
-                    <div style="flex: 1; min-width: 200px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-                        <h4 style="margin-top: 0; border-bottom: 2px solid #ddd; padding-bottom: 5px;">"Total Machines"</h4>
+                    <div class="summary-card">
+                        <h4>{move || current_localizer.get().get_ui("total_machines")}</h4>
                         {move || {
+                            let localizer = current_localizer.get();
                             let node = production_plan.get();
                             let mut machines: Vec<_> = node.total_machines().into_iter().collect();
                             machines.sort_by(|a, b| a.0.cmp(&b.0));
 
                             if machines.is_empty() {
-                                view! { <div style="color: #999;">"None"</div> }.into_any()
+                                view! { <div class="empty">{localizer.get_ui("none")}</div> }.into_any()
                             } else {
                                 view! {
-                                    <ul style="padding-left: 20px; margin: 0;">
+                                    <ul>
                                         {machines.into_iter().map(|(name, count)| {
-                                            view! { <li>{name} ": " <strong>{count}</strong></li> }
+                                            let display_name = localizer.get_machine(&name);
+                                            view! { <li>{display_name} ": " <strong>{count}</strong></li> }
                                         }).collect_view()}
                                     </ul>
                                 }.into_any()
@@ -177,25 +223,25 @@ fn app() -> impl IntoView {
                     </div>
 
                     // Power
-                    <div style="flex: 1; min-width: 200px; background: #fffbe6; padding: 15px; border-radius: 8px; border: 1px solid #faad14;">
-                        <h4 style="margin-top: 0; border-bottom: 2px solid #faad14; padding-bottom: 5px; color: #d48806;">"Total Power"</h4>
-                        <div style="font-size: 2em; font-weight: bold; color: #d48806; text-align: center; margin-top: 10px;">
+                    <div class="summary-card power">
+                        <h4>{move || current_localizer.get().get_ui("total_power")}</h4>
+                        <div class="power-value">
                             {move || production_plan.get().total_power()}
-                            <span style="font-size: 0.5em; margin-left: 5px;">"Units"</span>
+                            <span class="power-unit">{move || current_localizer.get().get_ui("power_unit")}</span>
                         </div>
                     </div>
                 </div>
 
                 // Tree view
-                <div style="margin-bottom: 20px;">
-                    <p style="color: #666;">
-                        "Target: " <strong>{move || selected_item.get()}</strong>
-                        " x" {move || target_amount.get()} "/min"
+                <div class="target-info">
+                    <p>
+                        {move || current_localizer.get().get_ui("target")} ": " <strong>{move || current_localizer.get().get_item(&selected_item.get())}</strong>
+                        " x" {move || target_amount.get()} {move || current_localizer.get().get_ui("per_min")}
                     </p>
                 </div>
 
                 <div class="production-tree">
-                    {move || view! { <TreeView node=production_plan.get() /> }}
+                    {move || view! { <TreeView node=production_plan.get() localizer=current_localizer.get() /> }}
                 </div>
             </div>
         </div>
@@ -203,7 +249,7 @@ fn app() -> impl IntoView {
 }
 
 #[component]
-fn tree_view(node: ProductionNode) -> impl IntoView {
+fn tree_view(node: ProductionNode, localizer: Localizer) -> impl IntoView {
     match node {
         ProductionNode::Resolved {
             item_id,
@@ -212,32 +258,43 @@ fn tree_view(node: ProductionNode) -> impl IntoView {
             machine_count,
             inputs,
             ..
-        } => view! {
-            <div class="tree-node">
-                <div class="node-content">
-                    <span class="connector">"├"</span>
-                    <strong>{item_id}</strong>
-                    " x"{amount}
-                    <span style="color: #666; font-size: 0.9em; margin-left: 10px;">
-                        " (" {machine_id} " x" {machine_count} ")"
-                    </span>
+        } => {
+            let item_name = localizer.get_item(&item_id);
+            let machine_name = localizer.get_machine(&machine_id);
+            let localizer_clone = localizer.clone();
+
+            view! {
+                <div class="tree-node">
+                    <div class="node-content">
+                        <span class="connector">"├"</span>
+                        <strong>{item_name}</strong>
+                        " x"{amount}
+                        <span class="machine-info">
+                            " (" {machine_name} " x" {machine_count} ")"
+                        </span>
+                    </div>
+                    {
+                        inputs.into_iter().map(move |child| {
+                            view! { <TreeView node=child localizer=localizer_clone.clone() /> }
+                        }).collect_view()
+                    }
                 </div>
-                {
-                    inputs.into_iter().map(|child| {
-                        view! { <TreeView node=child /> }
-                    }).collect_view()
-                }
-            </div>
+            }
+            .into_any()
         }
-        .into_any(),
-        ProductionNode::Unresolved { item_id, amount } => view! {
-            <div class="tree-node">
-                 <div class="node-content node-missing">
-                    <span class="connector">"x"</span>
-                    {item_id} " x" {amount} " [MISSING RECIPE]"
+        ProductionNode::Unresolved { item_id, amount } => {
+            let item_name = localizer.get_item(&item_id);
+            let missing_text = localizer.get_ui("missing_recipe");
+
+            view! {
+                <div class="tree-node">
+                     <div class="node-content missing">
+                        <span class="connector">"x"</span>
+                        {item_name} " x" {amount} " [" {missing_text} "]"
+                    </div>
                 </div>
-            </div>
+            }
+            .into_any()
         }
-        .into_any(),
     }
 }
