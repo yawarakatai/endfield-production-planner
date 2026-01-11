@@ -1,19 +1,16 @@
-mod config;
-mod constants;
-mod error;
-mod models;
-mod output;
-mod planner;
+use std::{collections::HashSet, fs};
 
-use std::collections::HashSet;
-
-use config::GameData;
-use error::ProductionError;
-use output::print_summary;
-use planner::plan_production;
+use resource_calculator_core::config::GameData;
+use resource_calculator_core::constants::{MACHINE_DEFINITION_PATH, RECIPE_DEFINITION_PATH};
+use resource_calculator_core::error::ProductionError;
+use resource_calculator_core::output::print_summary;
+use resource_calculator_core::planner::plan_production;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let data = GameData::load()?;
+    let recipes = fs::read_to_string(RECIPE_DEFINITION_PATH)?;
+    let machines = fs::read_to_string(MACHINE_DEFINITION_PATH)?;
+
+    let data = GameData::new(&recipes, &machines)?;
 
     println!(
         "Loaded {} recipes and {} machines.\n",

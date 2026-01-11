@@ -1,9 +1,7 @@
-use crate::constants::{MACHINE_DEFINITION_PATH, RECIPE_DEFINITION_PATH};
 use crate::error::ProductionError;
 use crate::models::{Machine, Recipe};
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::fs;
 
 #[derive(Debug, Deserialize)]
 struct RecipeConfig {
@@ -22,15 +20,10 @@ pub struct GameData {
 }
 
 impl GameData {
-    pub fn load() -> Result<Self, ProductionError> {
-        let recipes_str = fs::read_to_string(RECIPE_DEFINITION_PATH)
-            .map_err(|_| ProductionError::FileNotFound(RECIPE_DEFINITION_PATH.to_string()))?;
-        let machines_str = fs::read_to_string(MACHINE_DEFINITION_PATH)
-            .map_err(|_| ProductionError::FileNotFound(MACHINE_DEFINITION_PATH.to_string()))?;
-
-        let recipe_config: RecipeConfig = toml::from_str(&recipes_str)
+    pub fn new(recipes_content: &str, machines_content: &str) -> Result<Self, ProductionError> {
+        let recipe_config: RecipeConfig = toml::from_str(&recipes_content)
             .map_err(|e| ProductionError::ParseError(format!("recipes.toml: {}", e)))?;
-        let machine_config: MachineConfig = toml::from_str(&machines_str)
+        let machine_config: MachineConfig = toml::from_str(&machines_content)
             .map_err(|e| ProductionError::ParseError(format!("machines.toml: {}", e)))?;
 
         let mut recipes = HashMap::new();
