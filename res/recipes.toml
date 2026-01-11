@@ -961,7 +961,7 @@ by = "hand"
 time = 0
 out = 1
 [recipes.inputs]
-portable_miner = 1
+portable_originium_rig = 1
 originium_ore = 5
 
 [[recipes]]
@@ -978,7 +978,7 @@ by = "hand"
 time = 0
 out = 1
 [recipes.inputs]
-portable_miner = 1
+portable_originium_rig = 1
 ferrium_ore = 10
 
 [[recipes]]
@@ -987,7 +987,7 @@ by = "hand"
 time = 0
 out = 1
 [recipes.inputs]
-originium = 5
+originium_ore = 5
 
 [[recipes]]
 id = "shredding_unit"
