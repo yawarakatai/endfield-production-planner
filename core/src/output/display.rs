@@ -69,4 +69,6 @@ pub fn print_summary(node: &ProductionNode) {
     }
 
     println!("\nTotal Power Needed: {}", node.total_power());
+
+    println!("\nOverall Line Utilization Rate: {} %", node.utilization());
 }
