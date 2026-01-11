@@ -281,16 +281,21 @@ pub fn app() -> impl IntoView {
                                 let node = production_plan.get();
                                 let total_power = node.total_power();
                                 let total_machines: u32 = node.total_machines().values().sum();
+                                let utilization_rate = node.utilization();
 
                                 view! {
                                     <ul>
                                         <li>
                                             <span>{localizer.get_ui("power_usage")}</span>
-                                            <strong>{total_power} " " {localizer.get_ui("power_unit")}</strong>
+                                            <strong>{total_power}</strong>
                                         </li>
                                         <li>
                                             <span>{localizer.get_ui("total_machine_count")}</span>
-                                            <strong>{total_machines}</strong>
+                                            <strong>{total_machines} " " {localizer.get_ui("machine_unit")}</strong>
+                                        </li>
+                                        <li>
+                                            <span>{localizer.get_ui("utilization_rate")}</span>
+                                            <strong>{utilization_rate} " " %</strong>
                                         </li>
                                     </ul>
                                 }

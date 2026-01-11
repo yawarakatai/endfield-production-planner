@@ -362,6 +362,8 @@ body {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px dashed var(--color-border-light);
+  opacity: 0;
+  animation: slideInFade 0.3s ease-out forwards;
 }
 
 .summary-card li:last-child {
