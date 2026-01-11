@@ -9,35 +9,26 @@ fn main() {
 }
 
 #[component]
-fn App() -> impl IntoView {
-    // 1. 静的データのロード (アプリ起動時に1回だけ実行)
-    // ---------------------------------------------------
+fn app() -> impl IntoView {
+    // Load static data which is executed once on launch
     let recipes_str = include_str!("../../res/recipes.toml");
     let machines_str = include_str!("../../res/machines.toml");
-    // データの所有権をMoveできるようにArc等で包むか、ここでは単純にクローンして使う形にします
     let game_data = GameData::new(recipes_str, machines_str).expect("Failed to load data");
 
-    // 全アイテムのリストを作成してソートしておく
     let mut all_items: Vec<String> = game_data.recipes_by_output.keys().cloned().collect();
     all_items.sort();
 
-    // 2. シグナル（状態）の定義
-    // ---------------------------------------------------
-    // (値の読み取りアクセサ, 値の書き込みアクセサ) = signal(初期値);
-    let (target_amount, set_target_amount) = signal(1); // デフォルト数量: 1
-    let (search_query, set_search_query) = signal(String::new()); // 検索ボックスの中身
+    // Define signals
+    let (target_amount, set_target_amount) = signal(1); // Default: 1
+    let (search_query, set_search_query) = signal(String::new());
     let (selected_item, set_selected_item) = signal(
         all_items
             .first()
             .cloned()
             .unwrap_or_else(|| "originium_ore".to_string()),
-    ); // 現在選択されているアイテム
+    );
 
-    // 3. 派生シグナル（自動計算される値）
-    // ---------------------------------------------------
-
-    // A. 検索クエリに基づいてアイテムリストをフィルタリングする
-    // `move ||` は、このクロージャ内で外部の変数(all_itemsなど)を使うための記述です
+    // Filter item list by a query
     let filtered_items = move || {
         let query = search_query.get().to_lowercase();
         if query.is_empty() {
@@ -51,14 +42,12 @@ fn App() -> impl IntoView {
         }
     };
 
-    // B. 入力値が変わるたびに生産計画を再計算する
-    // Memoを使うと、依存するシグナルが変わった時だけ再実行されます
+    // Re-calculate the production plan everytime when the input value change
     let production_plan = Memo::new(move |_| {
         let item_id = selected_item.get();
         let amount = target_amount.get();
         let mut visiting = HashSet::new();
 
-        // ここでCoreの計算ロジックを呼び出す
         plan_production(
             &game_data.recipes,
             &game_data.recipes_by_output,
@@ -69,27 +58,23 @@ fn App() -> impl IntoView {
         )
     });
 
-    // 4. ビュー（UI）の構築
-    // ---------------------------------------------------
+    //  Construct view
     view! {
         <div style="font-family: sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; display: flex; gap: 20px;">
 
-            // --- 左サイドバー: 設定エリア ---
+            // Left side bar
             <div style="width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px;">
                 <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
                     <h3>"Settings"</h3>
 
-                    // 数量入力
+                    // Input value
                     <div style="margin-bottom: 10px;">
                         <label style="display:block; font-size: 0.9em; margin-bottom: 4px;">"Amount (/min)"</label>
                         <input
                             type="number"
                             min="1"
-                            // 値をバインド
                             prop:value=move || target_amount.get()
-                            // 入力イベントでシグナルを更新
                             on:input=move |ev| {
-                                // event_target_valueで入力文字を取得し、数値にパース
                                 if let Ok(val) = event_target_value(&ev).parse::<u32>() {
                                     set_target_amount.set(val);
                                 }
@@ -98,7 +83,7 @@ fn App() -> impl IntoView {
                         />
                     </div>
 
-                    // アイテム検索
+                    // Item search
                     <div>
                         <label style="display:block; font-size: 0.9em; margin-bottom: 4px;">"Search Item"</label>
                         <input
@@ -111,13 +96,12 @@ fn App() -> impl IntoView {
                     </div>
                 </div>
 
-                // アイテムリスト（検索結果）
+                // Item list
                 <div style="flex-grow: 1; border: 1px solid #ddd; border-radius: 8px; overflow-y: auto; max-height: 70vh;">
                      <For
                         each=filtered_items
                         key=|item| item.clone()
                         children=move |item| {
-                            // itemの所有権を複製（クロージャ内で使うため）
                             let item_for_click = item.clone();
                             let item_for_style = item.clone();
 
@@ -126,7 +110,6 @@ fn App() -> impl IntoView {
                             view! {
                                 <div
                                     on:click=on_click
-                                    // 【修正後】 style全体を move || で囲み、選択状態が変わるたびに文字列を作り直す
                                     style=move || {
                                         let is_selected = selected_item.get() == item_for_style;
                                         let bg_color = if is_selected { "#e3f2fd" } else { "white" };
@@ -142,21 +125,20 @@ fn App() -> impl IntoView {
                    </div>
                 </div>
 
-            // --- メインエリア: ツリー表示 ---
+            // Center area
             <div style="flex-grow: 1;">
                 <h1 style="margin: 0;">"Production Plan"</h1>
 
-                // --- 追加: 集計情報の表示エリア ---
+                // Total values
                 <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
 
-                    // 1. 原材料 (Raw Materials)
+                    // Raw Materials
                     <div style="flex: 1; min-width: 200px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
                         <h4 style="margin-top: 0; border-bottom: 2px solid #ddd; padding-bottom: 5px;">"Total Raw Materials"</h4>
                         {move || {
-                            // 計算結果を取得
                             let node = production_plan.get();
                             let mut materials: Vec<_> = node.total_source_materials().into_iter().collect();
-                            materials.sort_by(|a, b| a.0.cmp(&b.0)); // 名前順にソート
+                            materials.sort_by(|a, b| a.0.cmp(&b.0));
 
                             if materials.is_empty() {
                                 view! { <div style="color: #999;">"None"</div> }.into_any()
@@ -172,7 +154,7 @@ fn App() -> impl IntoView {
                         }}
                     </div>
 
-                    // 2. 機械 (Machines)
+                    // Machines
                     <div style="flex: 1; min-width: 200px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
                         <h4 style="margin-top: 0; border-bottom: 2px solid #ddd; padding-bottom: 5px;">"Total Machines"</h4>
                         {move || {
@@ -194,7 +176,7 @@ fn App() -> impl IntoView {
                         }}
                     </div>
 
-                    // 3. 電力 (Power)
+                    // Power
                     <div style="flex: 1; min-width: 200px; background: #fffbe6; padding: 15px; border-radius: 8px; border: 1px solid #faad14;">
                         <h4 style="margin-top: 0; border-bottom: 2px solid #faad14; padding-bottom: 5px; color: #d48806;">"Total Power"</h4>
                         <div style="font-size: 2em; font-weight: bold; color: #d48806; text-align: center; margin-top: 10px;">
@@ -204,6 +186,7 @@ fn App() -> impl IntoView {
                     </div>
                 </div>
 
+                // Tree view
                 <div style="margin-bottom: 20px;">
                     <p style="color: #666;">
                         "Target: " <strong>{move || selected_item.get()}</strong>
@@ -219,9 +202,8 @@ fn App() -> impl IntoView {
     }
 }
 
-// TreeViewコンポーネントは前回のまま（変更なし）
 #[component]
-fn TreeView(node: ProductionNode) -> impl IntoView {
+fn tree_view(node: ProductionNode) -> impl IntoView {
     match node {
         ProductionNode::Resolved {
             item_id,
