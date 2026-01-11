@@ -44,6 +44,7 @@
 
   /* Layout heights */
   --sidebar-height: calc(100vh - 160px);
+  --settings-panel-height: 300px;
 }
 
 /* ===== Reset & Base ===== */
@@ -144,6 +145,9 @@ body {
   position: relative;
   padding: var(--spacing-lg);
   padding-left: calc(var(--spacing-lg) + 4px);
+  height: var(--settings-panel-height);
+  display:flex;
+  flex-direction:column;
 }
 
 /* Yellow accent bar on the left */
@@ -293,8 +297,8 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-md);
-  height: auto;
-  align-content: start;
+  height: calc(var(--settings-panel-height) - 80px);
+  align-content: stretch;
 }
 
 .summary-card {
@@ -342,6 +346,7 @@ body {
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+  padding-right: var(--spacing-sm);
 }
 
 .summary-card ul {
