@@ -1,10 +1,10 @@
 use std::{collections::HashSet, fs};
 
-use resource_calculator_core::config::GameData;
-use resource_calculator_core::constants::{MACHINE_DEFINITION_PATH, RECIPE_DEFINITION_PATH};
-use resource_calculator_core::error::ProductionError;
-use resource_calculator_core::output::print_summary;
-use resource_calculator_core::planner::plan_production;
+use endfield_planner_core::config::GameData;
+use endfield_planner_core::constants::{MACHINE_DEFINITION_PATH, RECIPE_DEFINITION_PATH};
+use endfield_planner_core::error::ProductionError;
+use endfield_planner_core::output::print_summary;
+use endfield_planner_core::planner::plan_production;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let recipes = fs::read_to_string(RECIPE_DEFINITION_PATH)?;
@@ -18,8 +18,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         data.machines.len()
     );
 
-    let item_id = "cryston_component";
-    let amount = 12; // per minute
+    let item_id = "steel_part";
+    let amount = 180; // per minute
 
     if !data.recipes_by_output.contains_key(item_id) {
         return Err(Box::new(ProductionError::RecipeNotFound(

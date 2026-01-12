@@ -339,6 +339,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "endfield_planner_cli"
+version = "0.1.0"
+dependencies = [
+ "endfield_planner_core",
+]
+
+[[package]]
+name = "endfield_planner_core"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "toml",
+]
+
+[[package]]
+name = "endfield_planner_web"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "endfield_planner_core",
+ "leptos",
+ "web-sys",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1232,31 +1257,6 @@ name = "regex-syntax"
 version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
-
-[[package]]
-name = "resource_calculator_cli"
-version = "0.1.0"
-dependencies = [
- "resource_calculator_core",
-]
-
-[[package]]
-name = "resource_calculator_core"
-version = "0.1.0"
-dependencies = [
- "serde",
- "toml",
-]
-
-[[package]]
-name = "resource_calculator_web"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "leptos",
- "resource_calculator_core",
- "web-sys",
-]
 
 [[package]]
 name = "rstml"

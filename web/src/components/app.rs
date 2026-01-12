@@ -1,8 +1,8 @@
 use leptos::prelude::*;
-use resource_calculator_core::config::GameData;
-use resource_calculator_core::i18n::{Locale, Localizer};
-use resource_calculator_core::models::ProductionNode;
-use resource_calculator_core::planner::plan_production;
+use endfield_planner_core::config::GameData;
+use endfield_planner_core::i18n::{Locale, Localizer};
+use endfield_planner_core::models::ProductionNode;
+use endfield_planner_core::planner::plan_production;
 use std::collections::{HashMap, HashSet};
 
 use crate::components::tree_view::TreeView;

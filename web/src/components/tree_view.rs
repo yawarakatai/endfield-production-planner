@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use resource_calculator_core::i18n::Localizer;
-use resource_calculator_core::models::ProductionNode;
+use endfield_planner_core::i18n::Localizer;
+use endfield_planner_core::models::ProductionNode;
 use std::collections::HashSet;
 
 use crate::utils::localization::get_localized_name;

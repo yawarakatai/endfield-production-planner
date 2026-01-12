@@ -1,4 +1,4 @@
-use resource_calculator_core::i18n::Localizer;
+use endfield_planner_core::i18n::Localizer;
 use std::collections::HashSet;
 
 /// Helper function to get the localized name for an item ID.
