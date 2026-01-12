@@ -56,3 +56,123 @@ impl GameData {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_valid_toml() {
+        let recipes_toml = r#"
+[[recipes]]
+id = "origocrust"
+by = "refining_unit"
+time = 2
+out = 1
+[recipes.inputs]
+originium_ore = 1
+"#;
+
+        let machines_toml = r#"
+[[machines]]
+id = "refining_unit"
+tier = 1
+power = 5
+"#;
+
+        let result = GameData::new(recipes_toml, machines_toml);
+        assert!(result.is_ok());
+
+        let data = result.unwrap();
+        assert_eq!(data.recipes.len(), 1);
+        assert_eq!(data.machines.len(), 1);
+    }
+
+    #[test]
+    fn test_parse_invalid_toml() {
+        let invalid_recipes_toml = r#"
+[[recipes
+id = "origocrust"
+this is not valid toml
+"#;
+
+        let machines_toml = r#"
+[[machines]]
+id = "refining_unit"
+tier = 1
+power = 5
+"#;
+
+        let result = GameData::new(invalid_recipes_toml, machines_toml);
+        assert!(result.is_err());
+
+        match result {
+            Err(ProductionError::ParseError(msg)) => {
+                assert!(msg.contains("recipes.toml"));
+            }
+            _ => panic!("Expected ParseError"),
+        }
+    }
+
+    #[test]
+    fn test_recipes_by_output_grouping() {
+        let recipes_toml = r#"
+[[recipes]]
+id = "originium_ore"
+by = "portable_originium_rig"
+time = 2
+out = 1
+is_source = true
+
+[[recipes]]
+id = "originium_ore"
+by = "electric_mining_rig"
+time = 2
+out = 1
+is_source = true
+
+[[recipes]]
+id = "origocrust"
+by = "refining_unit"
+time = 2
+out = 1
+[recipes.inputs]
+originium_ore = 1
+"#;
+
+        let machines_toml = r#"
+[[machines]]
+id = "portable_originium_rig"
+tier = 1
+power = 0
+
+[[machines]]
+id = "electric_mining_rig"
+tier = 2
+power = 5
+
+[[machines]]
+id = "refining_unit"
+tier = 1
+power = 5
+"#;
+
+        let result = GameData::new(recipes_toml, machines_toml);
+        assert!(result.is_ok());
+
+        let data = result.unwrap();
+
+        // Both originium_ore recipes should be grouped under "originium_ore"
+        let ore_recipes = data.recipes_by_output.get("originium_ore");
+        assert!(ore_recipes.is_some());
+        assert_eq!(ore_recipes.unwrap().len(), 2);
+
+        // origocrust should have only one recipe
+        let crust_recipes = data.recipes_by_output.get("origocrust");
+        assert!(crust_recipes.is_some());
+        assert_eq!(crust_recipes.unwrap().len(), 1);
+
+        // Total recipes should be 3
+        assert_eq!(data.recipes.len(), 3);
+    }
+}
