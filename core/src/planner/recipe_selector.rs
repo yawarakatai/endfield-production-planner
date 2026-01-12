@@ -1,7 +1,14 @@
 //! Recipe selection logic for production planning.
 
 use crate::models::{Machine, Recipe};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+
+fn has_cyclic_inputs(recipe: &Recipe, visiting: &HashSet<String>) -> bool {
+    recipe
+        .inputs
+        .keys()
+        .any(|input_id| visiting.contains(input_id))
+}
 
 /// Selects the best recipe for a given item based on priority rules.
 ///
@@ -16,6 +23,7 @@ pub fn select_best_recipe<'a>(
     recipes: &'a HashMap<String, Recipe>,
     recipes_by_output: &HashMap<String, Vec<String>>,
     machines: &HashMap<String, Machine>,
+    visiting: &HashSet<String>,
 ) -> Option<&'a Recipe> {
     recipes_by_output.get(item_id).and_then(|candidates| {
         candidates
@@ -31,8 +39,13 @@ pub fn select_best_recipe<'a>(
                 let power_a = machine_a.map(|m| m.power).unwrap_or(0);
                 let power_b = machine_b.map(|m| m.power).unwrap_or(0);
 
-                tier_a
-                    .cmp(&tier_b)
+                let cyclic_a = has_cyclic_inputs(recipe_a, visiting);
+                let cyclic_b = has_cyclic_inputs(recipe_b, visiting);
+
+                cyclic_b
+                    .cmp(&cyclic_a)
+                    .then_with(|| recipe_a.is_source.cmp(&recipe_b.is_source))
+                    .then_with(|| tier_a.cmp(&tier_b))
                     .then_with(|| power_b.cmp(&power_a))
                     .then_with(|| recipe_a.id.cmp(&recipe_b.id))
             })

@@ -29,7 +29,13 @@ pub fn resolve(
     // Mark item as being visited (cycle detection)
     visiting.insert(item_id.to_string());
 
-    let result = match recipe_selector::select_best_recipe(item_id, recipes, recipes_by_output, machines) {
+    let result = match recipe_selector::select_best_recipe(
+        item_id,
+        recipes,
+        recipes_by_output,
+        machines,
+        visiting,
+    ) {
         Some(recipe) => build_resolved_node(
             recipe,
             recipes,
@@ -62,7 +68,9 @@ fn build_resolved_node(
     visiting: &mut HashSet<String>,
 ) -> ProductionNode {
     let machine = machines.get(&recipe.by);
-    let machine_id = machine.map(|m| m.id.clone()).unwrap_or_else(|| "manual".to_string());
+    let machine_id = machine
+        .map(|m| m.id.clone())
+        .unwrap_or_else(|| "manual".to_string());
 
     let calc = calculator::calculate(recipe, machine, amount, item_id);
 
