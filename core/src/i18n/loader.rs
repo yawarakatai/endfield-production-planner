@@ -39,6 +39,8 @@ struct LocaleData {
     machines: HashMap<String, String>,
     #[serde(default)]
     ui: HashMap<String, String>,
+    #[serde(default)]
+    readings: HashMap<String, String>,
 }
 
 /// Provides localized text retrieval.
@@ -47,6 +49,7 @@ pub struct Localizer {
     items: HashMap<String, String>,
     machines: HashMap<String, String>,
     ui: HashMap<String, String>,
+    readings: HashMap<String, String>,
 }
 
 impl Localizer {
@@ -65,6 +68,7 @@ impl Localizer {
             items: data.items,
             machines: data.machines,
             ui: data.ui,
+            readings: data.readings,
         })
     }
 
@@ -74,6 +78,7 @@ impl Localizer {
             items: HashMap::new(),
             machines: HashMap::new(),
             ui: HashMap::new(),
+            readings: HashMap::new(),
         }
     }
 
@@ -81,6 +86,16 @@ impl Localizer {
     /// Falls back to the item ID if no translation exists.
     pub fn get_item(&self, item_id: &str) -> String {
         self.items
+            .get(item_id)
+            .cloned()
+            .unwrap_or_else(|| item_id.to_string())
+    }
+
+    /// Gets the reading (furigana) for sorting purposes.
+    /// Falls back to the localized name if no reading exists.
+    /// This is primarily used for Japanese locale to enable proper sorting.
+    pub fn get_reading(&self, item_id: &str) -> String {
+        self.readings
             .get(item_id)
             .cloned()
             .unwrap_or_else(|| item_id.to_string())
@@ -98,9 +113,6 @@ impl Localizer {
     /// Gets a localized UI string.
     /// Falls back to the key if no translation exists.
     pub fn get_ui(&self, key: &str) -> String {
-        self.ui
-            .get(key)
-            .cloned()
-            .unwrap_or_else(|| key.to_string())
+        self.ui.get(key).cloned().unwrap_or_else(|| key.to_string())
     }
 }
