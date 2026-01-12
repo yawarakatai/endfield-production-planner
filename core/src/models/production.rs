@@ -19,7 +19,7 @@ pub enum ProductionNode {
 }
 
 impl ProductionNode {
-    pub fn is_source(&self) -> bool {
+    fn is_leaf(&self) -> bool {
         match self {
             ProductionNode::Resolved { inputs, .. } => inputs.is_empty(),
             _ => false,
@@ -35,7 +35,7 @@ impl ProductionNode {
     fn total_utilization(&self) -> f64 {
         match self {
             ProductionNode::Resolved { load, inputs, .. } => {
-                if self.is_source() {
+                if self.is_leaf() {
                     *load
                 } else {
                     load * inputs
@@ -64,7 +64,7 @@ impl ProductionNode {
             ProductionNode::Resolved {
                 item_id, amount, ..
             } => {
-                if node.is_source() {
+                if node.is_leaf() {
                     Some((item_id.clone(), *amount))
                 } else {
                     None
