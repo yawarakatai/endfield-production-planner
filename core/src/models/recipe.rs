@@ -12,6 +12,8 @@ pub struct Recipe {
     pub inputs: HashMap<String, u32>,
     #[serde(default)]
     pub outputs: HashMap<String, u32>,
+    #[serde(default)]
+    pub is_source: bool,
 }
 
 impl Recipe {
