@@ -18,8 +18,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         data.machines.len()
     );
 
-    let item_id = "steel_part";
-    let amount = 180; // per minute
+    let item_id = "lc_wuling_battery";
+    let amount = 12; // per minute
 
     if !data.recipes_by_output.contains_key(item_id) {
         return Err(Box::new(ProductionError::RecipeNotFound(
