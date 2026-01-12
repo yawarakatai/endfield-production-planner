@@ -1,6 +1,6 @@
 # Endfield Production Planner
 
-![Screenshot](screenshot.webp)
+![Screenshot](./docs/images/screenshot.webp)
 
 ### [Live Demo Here / こちらから利用できます](https://yawarakatai.github.io/endfield-production-planner/)
 

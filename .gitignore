@@ -1,3 +1,4 @@
 /target
 /.direnv
 web/dist
+res/data
