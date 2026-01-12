@@ -13,9 +13,11 @@ fn has_cyclic_inputs(recipe: &Recipe, visiting: &HashSet<String>) -> bool {
 /// Selects the best recipe for a given item based on priority rules.
 ///
 /// Priority (highest to lowest):
-/// 1. Higher machine tier
-/// 2. Lower power consumption
-/// 3. Alphabetical recipe ID (for determinism)
+/// 1. Cyclic check
+/// 2. Is source
+/// 3. Higher machine tier
+/// 4. Lower power consumption
+/// 5. Alphabetical recipe ID (for determinism)
 ///
 /// Returns `None` if no recipe exists for the item.
 pub fn select_best_recipe<'a>(
@@ -96,10 +98,18 @@ mod tests {
     #[test]
     fn test_avoids_cyclic_inputs() {
         // origocrust can be made from originium_ore or from origocrust_powder
-        let recipe_cyclic =
-            create_recipe("origocrust", "refining_unit", vec![("origocrust_powder", 1)], false);
-        let recipe_acyclic =
-            create_recipe("origocrust", "refining_unit", vec![("originium_ore", 1)], false);
+        let recipe_cyclic = create_recipe(
+            "origocrust",
+            "refining_unit",
+            vec![("origocrust_powder", 1)],
+            false,
+        );
+        let recipe_acyclic = create_recipe(
+            "origocrust",
+            "refining_unit",
+            vec![("originium_ore", 1)],
+            false,
+        );
 
         let mut recipes = HashMap::new();
         recipes.insert("recipe_cyclic".to_string(), recipe_cyclic);
@@ -109,7 +119,10 @@ mod tests {
             setup_recipes_by_output("origocrust", vec!["recipe_cyclic", "recipe_acyclic"]);
 
         let mut machines = HashMap::new();
-        machines.insert("refining_unit".to_string(), create_machine("refining_unit", 1, 5));
+        machines.insert(
+            "refining_unit".to_string(),
+            create_machine("refining_unit", 1, 5),
+        );
 
         let mut visiting = HashSet::new();
         visiting.insert("origocrust_powder".to_string());
@@ -132,8 +145,12 @@ mod tests {
     #[test]
     fn test_prefers_is_source() {
         // buckflower_seed can be picked (is_source=true) or could hypothetically be crafted
-        let recipe_source =
-            create_recipe("buckflower_seed", "seed_picking_unit", vec![("buckflower", 1)], true);
+        let recipe_source = create_recipe(
+            "buckflower_seed",
+            "seed_picking_unit",
+            vec![("buckflower", 1)],
+            true,
+        );
         let recipe_regular = create_recipe(
             "buckflower_seed",
             "gearing_unit",
@@ -145,14 +162,18 @@ mod tests {
         recipes.insert("recipe_source".to_string(), recipe_source);
         recipes.insert("recipe_regular".to_string(), recipe_regular);
 
-        let recipes_by_output = setup_recipes_by_output(
-            "buckflower_seed",
-            vec!["recipe_source", "recipe_regular"],
-        );
+        let recipes_by_output =
+            setup_recipes_by_output("buckflower_seed", vec!["recipe_source", "recipe_regular"]);
 
         let mut machines = HashMap::new();
-        machines.insert("seed_picking_unit".to_string(), create_machine("seed_picking_unit", 3, 10));
-        machines.insert("gearing_unit".to_string(), create_machine("gearing_unit", 1, 10));
+        machines.insert(
+            "seed_picking_unit".to_string(),
+            create_machine("seed_picking_unit", 3, 10),
+        );
+        machines.insert(
+            "gearing_unit".to_string(),
+            create_machine("gearing_unit", 1, 10),
+        );
 
         let visiting = HashSet::new();
 
@@ -218,8 +239,7 @@ mod tests {
     fn test_prefers_lower_power() {
         // At same tier, prefer lower power consumption
         // Both tier 2, but different power
-        let recipe_high_power =
-            create_recipe("amethyst_ore", "electric_mining_rig", vec![], true);
+        let recipe_high_power = create_recipe("amethyst_ore", "electric_mining_rig", vec![], true);
         let recipe_low_power = create_recipe("amethyst_ore", "fluid_pump", vec![], true);
 
         let mut recipes = HashMap::new();
