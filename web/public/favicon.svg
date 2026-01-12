@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#1A1A1A"/>
+  
+  <!-- Yellow accent bar -->
+  <rect x="0" y="0" width="4" height="32" fill="#FFE500"/>
+  
+  <!-- Stylized "E" for Endfield - industrial look -->
+  <path d="M8 6 L24 6 L24 10 L12 10 L12 14 L22 14 L22 18 L12 18 L12 22 L24 22 L24 26 L8 26 Z" fill="#FFFFFF"/>
+  
+  <!-- Small gear accent -->
+  <!-- <circle cx="26" cy="5" r="3" fill="none" stroke="#FFE500" stroke-width="1.5"/> -->
+  <!-- <circle cx="26" cy="5" r="1" fill="#FFE500"/> -->
+</svg>
