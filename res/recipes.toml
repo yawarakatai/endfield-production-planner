@@ -211,7 +211,7 @@ time = 0
 out = 1
 
 [[recipes]]
-id = "rejade_ginseng"
+id = "redjade_ginseng"
 by = "gathering"
 time = 0
 out = 1
@@ -795,15 +795,6 @@ out = 1
 [recipes.inputs]
 clean_water = 1
 stabilized_carbon = 2
-
-[[recipes]]
-id = "bumper_rich"
-by = "forge_of_the_sky"
-time = 2
-out = 1
-[recipes.inputs]
-liquid_xiranite = 1
-burdo_muck = 1
 
 # --- Assembly ---
 
