@@ -1,14 +1,25 @@
 
 # ==========================================
 # Machine Definitions
-# Speed Unit: Percentage (100 = 1.0x standard speed)
+# id:   String snake_case
+# Tier: Integer from 1 to 6
 # Power Unit: Integer
 # ==========================================
 
 # --- The Player (Hand) ---
 [[machines]]
-id = "hand"
-tier = 0
+id = "crafting"
+tier = 1
+power = 0
+
+[[machines]]
+id = "gathering"
+tier = 1
+power = 0
+
+[[machines]]
+id = "purchasing"
+tier = 1
 power = 0
 
 # --- Automated Industry Complex (AIC) ---
@@ -65,6 +76,11 @@ power = 10
 id = "seed_picking_unit"
 tier = 3
 power = 10
+
+[[machines]]
+id = "forge_of_the_sky"
+tier = 4
+power = 50
 
 # --- Assembly ---
 

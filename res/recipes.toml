@@ -1,7 +1,232 @@
 # ==========================================
 # Recipe Definitions
-# Time Unit: second 
+# id:         String snake_case
+# by:         String snake_case
+# time:       Integer time to craft
+# out:        Integer number of items when crafting
+# is_source:  Optional Bool 
+# inputs:     Dictionary id: Integer
+# outputs:    Dictionary id: Integer (usually this term isn't necessary)
 # ==========================================
+
+# --- The Player ---
+
+# --- Crafting ---
+
+[[recipes]]
+id = "portable_originium_rig"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+originium_ore = 5
+
+[[recipes]]
+id = "electric_mining_rig"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+portable_originium_rig = 1
+originium_ore = 5
+
+[[recipes]]
+id = "fluid_pump"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+ferrium_part = 10
+
+[[recipes]]
+id = "electric_mining_rig_mk2"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+portable_originium_rig = 1
+ferrium_ore = 10
+
+[[recipes]]
+id = "refining_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+originium_ore = 5
+
+[[recipes]]
+id = "shredding_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 5
+
+[[recipes]]
+id = "fitting_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 10
+
+[[recipes]]
+id = "moulding_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 10
+
+[[recipes]]
+id = "planting_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+carbon = 10
+amethyst_part = 20
+
+[[recipes]]
+id = "seed_picking_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+amethyst_part = 20
+
+[[recipes]]
+id = "gearing_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+origocrust = 10
+
+[[recipes]]
+id = "filling_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+amethyst_part = 20
+
+[[recipes]]
+id = "packaging_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+amethyst_part = 20
+
+[[recipes]]
+id = "reactor_crucible"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+ferrium_part = 20
+
+[[recipes]]
+id = "grinding_unit"
+by = "crafting"
+time = 0
+out = 1
+[recipes.inputs]
+ferrium_part = 10
+
+# --- Gathering ---
+
+[[recipes]]
+id = "buckflower"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "firebuckle"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "citrome"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "umbraline"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "sandleaf"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "aketine"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "jincao"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "yazhen"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "fluffed_jincao"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "thorny_yazhen"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "reed_rye"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "tartpepper"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "rejade_ginseng"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "amber_rice"
+by = "gathering"
+time = 0
+out = 1
+
+[[recipes]]
+id = "wood"
+by = "gathering"
+time = 0
+out = 1
 
 # --- Resourcing ---
 
@@ -425,6 +650,7 @@ out = 1
 steel = 2
 
 # ---Planting Unit (Solid Mode)---
+
 [[recipes]]
 id = "buckflower"
 by = "planting_unit"
@@ -558,6 +784,26 @@ out = 2
 is_source = true
 [recipes.inputs]
 tartpepper = 1
+
+# --- Forge of the Sky ---
+
+[[recipes]]
+id = "xiranite"
+by = "forge_of_the_sky"
+time = 2
+out = 1
+[recipes.inputs]
+clean_water = 1
+stabilized_carbon = 2
+
+[[recipes]]
+id = "bumper_rich"
+by = "forge_of_the_sky"
+time = 2
+out = 1
+[recipes.inputs]
+liquid_xiranite = 1
+burdo_muck = 1
 
 # --- Assembly ---
 
@@ -830,7 +1076,6 @@ out = 1
 dense_originium_powder = 15
 steel_part = 10
 
-
 [[recipes]]
 id = "lc_wuling_battery"
 by = "packaging_unit"
@@ -995,127 +1240,10 @@ out = 1100
 [recipes.inputs]
 hc_valley_battery = 1
 
-# --- Construct Recipes (Machines) ---
-
 [[recipes]]
-id = "portable_originium_rig"
-by = "hand"
-time = 0
-out = 1
+id = "power"
+by = "generator"
+time = 40
+out = 1600
 [recipes.inputs]
-originium_ore = 5
-
-[[recipes]]
-id = "electric_mining_rig"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-portable_originium_rig = 1
-originium_ore = 5
-
-[[recipes]]
-id = "fluid_pump"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-ferrium_part = 10
-
-[[recipes]]
-id = "electric_mining_rig_mk2"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-portable_originium_rig = 1
-ferrium_ore = 10
-
-[[recipes]]
-id = "refining_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-originium_ore = 5
-
-[[recipes]]
-id = "shredding_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-origocrust = 5
-
-[[recipes]]
-id = "fitting_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-origocrust = 10
-
-[[recipes]]
-id = "moulding_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-origocrust = 10
-
-[[recipes]]
-id = "planting_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-carbon = 10
-amethyst_part = 20
-
-[[recipes]]
-id = "seed_picking_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-amethyst_part = 20
-
-[[recipes]]
-id = "gearing_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-origocrust = 10
-
-[[recipes]]
-id = "filling_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-amethyst_part = 20
-
-[[recipes]]
-id = "packaging_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-amethyst_part = 20
-
-[[recipes]]
-id = "reactor_crucible"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-ferrium_part = 20
-
-[[recipes]]
-id = "grinding_unit"
-by = "hand"
-time = 0
-out = 1
-[recipes.inputs]
-ferrium_part = 10
+lc_wuling_battery = 1
