@@ -1,8 +1,8 @@
-use leptos::prelude::*;
 use endfield_planner_core::config::GameData;
 use endfield_planner_core::i18n::{Locale, Localizer};
 use endfield_planner_core::models::ProductionNode;
 use endfield_planner_core::planner::plan_production;
+use leptos::prelude::*;
 use std::collections::{HashMap, HashSet};
 
 use crate::components::tree_view::TreeView;
@@ -78,7 +78,7 @@ pub fn app() -> impl IntoView {
         let query = search_query.get().to_lowercase();
         let localizer = current_localizer.get();
 
-        if query.is_empty() {
+        let mut items: Vec<String> = if query.is_empty() {
             all_items.clone()
         } else {
             all_items
@@ -94,7 +94,15 @@ pub fn app() -> impl IntoView {
                 })
                 .cloned()
                 .collect()
-        }
+        };
+
+        items.sort_by(|a, b| {
+            let reading_a = localizer.get_reading(a);
+            let reading_b = localizer.get_reading(b);
+            reading_a.cmp(&reading_b)
+        });
+
+        items
     };
 
     // Re-calculate the production plan everytime when the input value change
