@@ -70,7 +70,7 @@ fn build_resolved_node(
     let machine = machines.get(&recipe.by);
     let machine_id = machine
         .map(|m| m.id.clone())
-        .unwrap_or_else(|| "manual".to_string());
+        .unwrap_or_else(|| "missing_machine".to_string());
 
     let calc = calculator::calculate(recipe, machine, amount, item_id);
 
@@ -164,7 +164,10 @@ mod tests {
         );
 
         let mut recipes = HashMap::new();
-        recipes.insert("originium_ore@electric_mining_rig[]".to_string(), recipe_ore);
+        recipes.insert(
+            "originium_ore@electric_mining_rig[]".to_string(),
+            recipe_ore,
+        );
         recipes.insert(
             "originium_powder@shredding_unit[originium_ore:1]".to_string(),
             recipe_powder,
@@ -229,7 +232,9 @@ mod tests {
                         assert_eq!(powder_inputs.len(), 1);
 
                         match &powder_inputs[0] {
-                            ProductionNode::Resolved { item_id: ore_id, .. } => {
+                            ProductionNode::Resolved {
+                                item_id: ore_id, ..
+                            } => {
                                 assert_eq!(ore_id, "originium_ore");
                             }
                             _ => panic!("Expected Resolved node for originium_ore"),
