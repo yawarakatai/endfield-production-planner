@@ -1199,42 +1199,42 @@ citrome_powder = 2
 
 # --- Generator ---
 
-[[recipes]]
-id = "power"
-by = "generator"
-time = 8
-out = 50
-[recipes.inputs]
-originium = 1
+# [[recipes]]
+# id = "power"
+# by = "generator"
+# time = 8
+# out = 50
+# [recipes.inputs]
+# originium = 1
 
-[[recipes]]
-id = "power"
-by = "generator"
-time = 40
-out = 220
-[recipes.inputs]
-lc_valley_battery = 1
+# [[recipes]]
+# id = "power"
+# by = "generator"
+# time = 40
+# out = 220
+# [recipes.inputs]
+# lc_valley_battery = 1
 
-[[recipes]]
-id = "power"
-by = "generator"
-time = 40
-out = 420
-[recipes.inputs]
-sc_valley_battery = 1
+# [[recipes]]
+# id = "power"
+# by = "generator"
+# time = 40
+# out = 420
+# [recipes.inputs]
+# sc_valley_battery = 1
 
-[[recipes]]
-id = "power"
-by = "generator"
-time = 40
-out = 1100
-[recipes.inputs]
-hc_valley_battery = 1
+# [[recipes]]
+# id = "power"
+# by = "generator"
+# time = 40
+# out = 1100
+# [recipes.inputs]
+# hc_valley_battery = 1
 
-[[recipes]]
-id = "power"
-by = "generator"
-time = 40
-out = 1600
-[recipes.inputs]
-lc_wuling_battery = 1
+# [[recipes]]
+# id = "power"
+# by = "generator"
+# time = 40
+# out = 1600
+# [recipes.inputs]
+# lc_wuling_battery = 1
