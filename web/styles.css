@@ -48,7 +48,9 @@
 }
 
 /* ===== Reset & Base ===== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -60,11 +62,9 @@ body {
   line-height: 1.6;
   color: var(--color-text-primary);
   background-color: var(--color-bg-secondary);
-  background-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.07) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(circle,
+      rgba(0, 0, 0, 0.07) 1px,
+      transparent 1px);
   background-size: 16px 16px;
   min-height: 100vh;
 }
@@ -73,22 +73,18 @@ body {
 
 /* Diagonal stripes pattern */
 .pattern-stripes {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 10px,
-    rgba(0, 0, 0, 0.03) 10px,
-    rgba(0, 0, 0, 0.03) 20px
-  );
+  background-image: repeating-linear-gradient(-45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 0, 0, 0.03) 10px,
+      rgba(0, 0, 0, 0.03) 20px);
 }
 
 /* Dot matrix pattern */
 .pattern-dots {
-  background-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.1) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(circle,
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px);
   background-size: 16px 16px;
 }
 
@@ -146,8 +142,8 @@ body {
   padding: var(--spacing-lg);
   padding-left: calc(var(--spacing-lg) + 4px);
   height: var(--settings-panel-height);
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Yellow accent bar on the left */
@@ -441,11 +437,9 @@ body {
   border: 1px solid var(--color-border-light);
   padding: var(--spacing-lg);
   /* Dot matrix background */
-  background-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.05) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(circle,
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px);
   background-size: 12px 12px;
 }
 
@@ -498,7 +492,8 @@ body {
 }
 
 .connector {
-  display: none; /* Hide the text connector, we use CSS lines instead */
+  display: none;
+  /* Hide the text connector, we use CSS lines instead */
 }
 
 .machine-info {
@@ -553,7 +548,7 @@ body {
   padding: 1px 8px;
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border-light);
-  border-radius: 6px; 
+  border-radius: 6px;
   font-size: 0.75rem;
   font-family: var(--font-mono);
   color: var(--color-text-secondary);
@@ -580,9 +575,10 @@ body {
 /* ==== Production Tree Animation ==== */
 @keyframes slideInFade {
   from {
-    opacity: 0,
+    opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
