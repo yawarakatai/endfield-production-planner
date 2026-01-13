@@ -26,6 +26,8 @@
             trunk
             lld
             wasm-bindgen-cli
+            binaryen
+            vscode-langservers-extracted
           ];
 
           shellHook = ''
