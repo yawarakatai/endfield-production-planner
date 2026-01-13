@@ -69,6 +69,10 @@ pub fn app() -> impl IntoView {
     );
     let (current_locale, set_current_locale) = signal(initial_locale);
 
+    // UI state signals
+    let (sidebar_open, set_sidebar_open) = signal(false);
+    let (summary_collapsed, set_summary_collapsed) = signal(false);
+
     // Create a memo for the current localizer
     let current_localizer =
         Memo::new(move |_| localizers.get(&current_locale.get()).unwrap().clone());
@@ -121,16 +125,45 @@ pub fn app() -> impl IntoView {
         )
     });
 
+    // Handler to close sidebar (for overlay click and item selection)
+    let close_sidebar = move |_| set_sidebar_open.set(false);
+
     //  Construct view
     view! {
         <header class="app-header">
+            // Sidebar toggle button (left side, visible on tablet/mobile)
+            <button
+                class="sidebar-toggle"
+                on:click=move |_| set_sidebar_open.update(|open| *open = !*open)
+                aria-label="Open menu"
+            >
+                <span class="sidebar-toggle-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+                <span class="sidebar-toggle-label">
+                    {move || current_localizer.get().get_ui("item_select")}
+                </span>
+            </button>
             <div class="app-logo">"ENDFIELD PRODUCTION PLANNER"</div>
+            // Spacer to balance the layout (hidden on desktop)
+            <div class="header-spacer"></div>
         </header>
+
+        // Overlay for sidebar (visible when sidebar is open on tablet/mobile)
+        <div
+            class=move || if sidebar_open.get() { "sidebar-overlay active" } else { "sidebar-overlay" }
+            on:click=close_sidebar
+        />
 
         <div class="app-container">
 
             // Left sidebar
-            <div class="sidebar">
+            <div class=move || if sidebar_open.get() { "sidebar open" } else { "sidebar" }>
+                // Close button (visible on tablet/mobile)
+                <button class="sidebar-close" on:click=close_sidebar>"×"</button>
+
                 <div class="settings-panel">
                     <h3>{move || current_localizer.get().get_ui("settings")}</h3>
 
@@ -194,7 +227,11 @@ pub fn app() -> impl IntoView {
                             let item_for_class = item.clone();
                             let item_id_for_display = item.clone();
 
-                            let on_click = move |_| set_selected_item.set(item_for_click.clone());
+                            let on_click = move |_| {
+                                set_selected_item.set(item_for_click.clone());
+                                // Close sidebar on mobile after selection
+                                set_sidebar_open.set(false);
+                            };
 
                             view! {
                                 <div
@@ -223,91 +260,104 @@ pub fn app() -> impl IntoView {
 
             // Main content
             <div class="main-content">
-                <h1>{move || current_localizer.get().get_ui("production_plan")}</h1>
+                // Header with collapse toggle
+                <div class="collapsible-header">
+                    <h1>{move || current_localizer.get().get_ui("production_plan")}</h1>
+                    <button
+                        class=move || if summary_collapsed.get() { "collapse-toggle collapsed" } else { "collapse-toggle" }
+                        on:click=move |_| set_summary_collapsed.update(|c| *c = !*c)
+                        title=move || if summary_collapsed.get() { "Expand" } else { "Collapse" }
+                    >
+                        <span class="collapse-toggle-icon"></span>
+                    </button>
+                </div>
 
-                // Total values
-                <div class="summary-container">
+                // Collapsible summary wrapper
+                <div class=move || if summary_collapsed.get() { "summary-wrapper collapsed" } else { "summary-wrapper" }>
+                    // Total values
+                    <div class="summary-container">
 
-                    // Raw Materials
-                    <div class="summary-card">
-                        <h4>{move || current_localizer.get().get_ui("total_raw_materials")}</h4>
-                        <div class="summary-card-content">
-                            {move || {
-                                let localizer = current_localizer.get();
-                                let node = production_plan.get();
-                                let mut materials: Vec<_> = node.total_source_materials().into_iter().collect();
-                                materials.sort_by(|a, b| a.0.cmp(&b.0));
+                        // Raw Materials
+                        <div class="summary-card">
+                            <h4>{move || current_localizer.get().get_ui("total_raw_materials")}</h4>
+                            <div class="summary-card-content">
+                                {move || {
+                                    let localizer = current_localizer.get();
+                                    let node = production_plan.get();
+                                    let mut materials: Vec<_> = node.total_source_materials().into_iter().collect();
+                                    materials.sort_by(|a, b| a.0.cmp(&b.0));
 
-                                if materials.is_empty() {
-                                    view! { <div class="empty">{localizer.get_ui("none")}</div> }.into_any()
-                                } else {
+                                    if materials.is_empty() {
+                                        view! { <div class="empty">{localizer.get_ui("none")}</div> }.into_any()
+                                    } else {
+                                        view! {
+                                            <ul>
+                                                {materials.into_iter().map(|(name, count)| {
+                                                    let display_name = localizer.get_item(&name);
+                                                    view! { <li>{display_name} ": " <strong>{count}</strong></li> }
+                                                }).collect_view()}
+                                            </ul>
+                                        }.into_any()
+                                    }
+                                }}
+                            </div>
+                        </div>
+
+                        // Machines
+                        <div class="summary-card">
+                            <h4>{move || current_localizer.get().get_ui("total_machines")}</h4>
+                            <div class="summary-card-content">
+                                {move || {
+                                    let localizer = current_localizer.get();
+                                    let node = production_plan.get();
+                                    let mut machines: Vec<_> = node.total_machines().into_iter().collect();
+                                    machines.sort_by(|a, b| a.0.cmp(&b.0));
+
+                                    if machines.is_empty() {
+                                        view! { <div class="empty">{localizer.get_ui("none")}</div> }.into_any()
+                                    } else {
+                                        view! {
+                                            <ul>
+                                                {machines.into_iter().map(|(name, count)| {
+                                                    let display_name = localizer.get_machine(&name);
+                                                    view! { <li>{display_name} ": " <strong>{count}</strong></li> }
+                                                }).collect_view()}
+                                            </ul>
+                                        }.into_any()
+                                    }
+                                }}
+                            </div>
+                        </div>
+
+                        // Power
+                        <div class="summary-card power">
+                            <h4>{move || current_localizer.get().get_ui("total_power")}</h4>
+                            <div class="summary-card-content">
+                                {move || {
+                                    let localizer = current_localizer.get();
+                                    let node = production_plan.get();
+                                    let total_power = node.total_power();
+                                    let total_machines: u32 = node.total_machines().values().sum();
+                                    let utilization_rate = node.utilization();
+
                                     view! {
                                         <ul>
-                                            {materials.into_iter().map(|(name, count)| {
-                                                let display_name = localizer.get_item(&name);
-                                                view! { <li>{display_name} ": " <strong>{count}</strong></li> }
-                                            }).collect_view()}
+                                            <li>
+                                                <span>{localizer.get_ui("power_usage")}</span>
+                                                <strong>{total_power}</strong>
+                                            </li>
+                                            <li>
+                                                <span>{localizer.get_ui("total_machine_count")}</span>
+                                                <strong>{total_machines} " " {localizer.get_ui("machine_unit")}</strong>
+                                            </li>
+                                            <li>
+                                                <span>{localizer.get_ui("utilization_rate")}</span>
+                                                <strong>{utilization_rate} " " %</strong>
+                                            </li>
                                         </ul>
-                                    }.into_any()
-                                }
-                            }}
-                        </div>
-                    </div>
-
-                    // Machines
-                    <div class="summary-card">
-                        <h4>{move || current_localizer.get().get_ui("total_machines")}</h4>
-                        <div class="summary-card-content">
-                            {move || {
-                                let localizer = current_localizer.get();
-                                let node = production_plan.get();
-                                let mut machines: Vec<_> = node.total_machines().into_iter().collect();
-                                machines.sort_by(|a, b| a.0.cmp(&b.0));
-
-                                if machines.is_empty() {
-                                    view! { <div class="empty">{localizer.get_ui("none")}</div> }.into_any()
-                                } else {
-                                    view! {
-                                        <ul>
-                                            {machines.into_iter().map(|(name, count)| {
-                                                let display_name = localizer.get_machine(&name);
-                                                view! { <li>{display_name} ": " <strong>{count}</strong></li> }
-                                            }).collect_view()}
-                                        </ul>
-                                    }.into_any()
-                                }
-                            }}
-                        </div>
-                    </div>
-
-                    // Power
-                    <div class="summary-card power">
-                        <h4>{move || current_localizer.get().get_ui("total_power")}</h4>
-                        <div class="summary-card-content">
-                            {move || {
-                                let localizer = current_localizer.get();
-                                let node = production_plan.get();
-                                let total_power = node.total_power();
-                                let total_machines: u32 = node.total_machines().values().sum();
-                                let utilization_rate = node.utilization();
-
-                                view! {
-                                    <ul>
-                                        <li>
-                                            <span>{localizer.get_ui("power_usage")}</span>
-                                            <strong>{total_power}</strong>
-                                        </li>
-                                        <li>
-                                            <span>{localizer.get_ui("total_machine_count")}</span>
-                                            <strong>{total_machines} " " {localizer.get_ui("machine_unit")}</strong>
-                                        </li>
-                                        <li>
-                                            <span>{localizer.get_ui("utilization_rate")}</span>
-                                            <strong>{utilization_rate} " " %</strong>
-                                        </li>
-                                    </ul>
-                                }
-                            }}
+                                    }
+                                }}
+                            </div>
                         </div>
                     </div>
                 </div>
