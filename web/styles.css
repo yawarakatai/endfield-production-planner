@@ -79,8 +79,7 @@
     --spacing-md: 14px;
     --spacing-lg: 20px;
     --spacing-xl: 24px;
-    --sidebar-width: 240px;
-    /* Reduced to 3/4 (320px * 0.75 = 240px) */
+    --sidebar-width: 280px;
     --container-padding: var(--spacing-md);
   }
 }
@@ -151,12 +150,13 @@ body {
   padding: var(--spacing-md) var(--spacing-xl);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   border-bottom: 4px solid var(--color-accent);
   height: var(--header-height);
   position: sticky;
   top: 0;
   z-index: 100;
+  gap: var(--spacing-md);
 }
 
 .app-logo {
@@ -174,11 +174,138 @@ body {
   font-weight: 900;
 }
 
+/* Spacer to balance header layout on tablet/mobile */
+.header-spacer {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .app-header {
+    justify-content: space-between;
+  }
+
+  .header-spacer {
+    display: block;
+    width: 120px;
+    /* Match sidebar-toggle width approximately */
+  }
+}
+
 /* Smaller logo on mobile */
 @media (max-width: 767px) {
   .app-logo {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
+
+  .header-spacer {
+    width: 48px;
+    /* Smaller on mobile (icon only) */
+  }
+}
+
+/* Very small screens: hide logo text, show only icon */
+@media (max-width: 480px) {
+  .app-logo {
+    /* font-size: 0.95rem; */
+    white-space: nowrap;
+  }
+}
+
+/* ===== Sidebar Toggle Button ===== */
+.sidebar-toggle {
+  display: none;
+  background: var(--color-accent);
+  border: none;
+  color: var(--color-bg-dark);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: var(--color-accent-hover);
+}
+
+.sidebar-toggle:active {
+  transform: scale(0.98);
+}
+
+.sidebar-toggle-icon {
+  display: inline-block;
+  width: 18px;
+  height: 14px;
+  position: relative;
+}
+
+.sidebar-toggle-icon span {
+  display: block;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  left: 0;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-toggle-icon span:nth-child(1) {
+  top: 0;
+}
+
+.sidebar-toggle-icon span:nth-child(2) {
+  top: 6px;
+}
+
+.sidebar-toggle-icon span:nth-child(3) {
+  top: 12px;
+}
+
+.sidebar-toggle-label {
+  display: inline;
+}
+
+/* Show toggle button on tablet and mobile */
+@media (max-width: 1024px) {
+  .sidebar-toggle {
+    display: flex;
+  }
+}
+
+/* Hide label on small screens, show icon only */
+@media (max-width: 767px) {
+  .sidebar-toggle {
+    padding: var(--spacing-sm);
+  }
+
+  .sidebar-toggle-label {
+    display: none;
+  }
+}
+
+/* ===== Sidebar Overlay (for tablet/mobile) ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
 }
 
 /* ===== Layout ===== */
@@ -207,6 +334,53 @@ body {
   flex-direction: column;
   gap: var(--spacing-md);
   max-height: var(--content-height);
+  transition: transform 0.3s ease;
+}
+
+/* Sidebar close button (visible only when sidebar is overlay) */
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  line-height: 1;
+  z-index: 10;
+}
+
+.sidebar-close:hover {
+  color: var(--color-text-primary);
+}
+
+/* Tablet/Mobile: Sidebar as overlay */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    max-height: none;
+    background: var(--color-bg-secondary);
+    z-index: 200;
+    transform: translateX(-100%);
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-close {
+    display: block;
+  }
 }
 
 .settings-panel {
@@ -374,6 +548,48 @@ body {
   min-width: 0;
 }
 
+/* ===== Collapsible Section Header ===== */
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.collapsible-header h1 {
+  margin: 0;
+}
+
+.collapse-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.collapse-toggle:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.collapse-toggle-icon {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--color-text-primary);
+  transition: transform 0.3s ease;
+}
+
+.collapse-toggle.collapsed .collapse-toggle-icon {
+  transform: rotate(-90deg);
+}
+
 .main-content h1 {
   font-size: 2rem;
   font-weight: 900;
@@ -393,6 +609,24 @@ body {
   .main-content h1 {
     font-size: 1.5rem;
   }
+
+  .collapse-toggle {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ===== Collapsible Summary Container ===== */
+.summary-wrapper {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 500px;
+  opacity: 1;
+}
+
+.summary-wrapper.collapsed {
+  max-height: 0;
+  opacity: 0;
 }
 
 /* ===== Summary Cards ===== */
@@ -783,9 +1017,9 @@ body {
     padding: var(--spacing-md);
   }
 
+  /* Sidebar is overlay on mobile, so don't show inline */
   .sidebar {
-    width: 100%;
-    max-height: none;
+    width: var(--sidebar-width);
   }
 
   .settings-panel {
@@ -793,8 +1027,7 @@ body {
   }
 
   .item-list {
-    max-height: 25vh;
-    /* Reduced from previous value */
+    max-height: 40vh;
     min-height: 150px;
   }
 
@@ -856,14 +1089,7 @@ body {
     flex-direction: row;
   }
 
-  .sidebar {
-    width: 240px;
-    max-height: calc(100vh - var(--header-height) - (var(--container-padding) * 2));
-  }
-
-  .item-list {
-    max-height: none;
-  }
+  /* Sidebar is still overlay in landscape tablet/mobile */
 
   .summary-container {
     grid-template-columns: repeat(3, 1fr);
