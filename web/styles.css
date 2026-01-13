@@ -215,7 +215,7 @@ body {
   position: relative;
   padding: var(--spacing-lg);
   padding-left: calc(var(--spacing-lg) + 4px);
-  min-height: 280px;
+  /* min-height: 280px; */
   display: flex;
   flex-direction: column;
 }
@@ -247,50 +247,6 @@ body {
   content: '//';
   color: var(--color-accent);
   font-weight: 900;
-}
-
-/* ===== Collapsible Section Styles ===== */
-.collapsible-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  padding: var(--spacing-sm) 0;
-  transition: opacity 0.2s;
-}
-
-.collapsible-header:hover {
-  opacity: 0.7;
-}
-
-.collapsible-toggle {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  transition: transform 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-/* Rotate toggle icon when expanded */
-.collapsible-toggle.expanded {
-  transform: rotate(180deg);
-}
-
-.collapsible-content {
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  max-height: 2000px;
-  opacity: 1;
-}
-
-.collapsible-content.collapsed {
-  max-height: 0;
-  opacity: 0;
-  pointer-events: none;
 }
 
 /* Add collapsible header to section titles */
