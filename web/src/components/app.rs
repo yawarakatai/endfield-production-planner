@@ -7,6 +7,7 @@ use std::collections::{HashMap, HashSet};
 
 use crate::components::tree_view::TreeView;
 use crate::utils::localization::get_localized_name;
+use crate::utils::url::{generate_share_url, parse_url_params, update_url_params};
 
 #[component]
 pub fn app() -> impl IntoView {
@@ -57,17 +58,28 @@ pub fn app() -> impl IntoView {
         }
     };
 
+    // Parse URL parameters for initial state
+    let url_params = parse_url_params();
+
     // Define signals
-    let (target_amount, set_target_amount) = signal(1); // Default: 1
+    let (current_locale, set_current_locale) = signal(initial_locale);
+    let (target_amount, set_target_amount) = signal(url_params.amount.unwrap_or(1));
     let (search_query, set_search_query) = signal(String::new());
 
+    let default_item = all_items.first().cloned().unwrap_or_else(|| "".to_string());
+
     let (selected_item, set_selected_item) = signal(
-        all_items
-            .first()
-            .cloned()
-            .unwrap_or_else(|| "originium_ore".to_string()),
+        url_params
+            .item
+            .filter(|item| all_items.contains(item))
+            .unwrap_or(default_item),
     );
-    let (current_locale, set_current_locale) = signal(initial_locale);
+
+    Effect::new(move |_| {
+        let item = selected_item.get();
+        let amount = target_amount.get();
+        update_url_params(&item, amount);
+    });
 
     // UI state signals
     let (sidebar_open, set_sidebar_open) = signal(false);
@@ -375,6 +387,31 @@ pub fn app() -> impl IntoView {
                             }}</strong>
                             " x" {move || target_amount.get()} {move || current_localizer.get().get_ui("per_min")}
                         </p>
+                        <button
+                            class="share-button"
+                            on:click=move |_| {
+                                if let Some(url) = generate_share_url(&selected_item.get(), target_amount.get()) {
+                                    if let Some(window) = web_sys::window() {
+                                        let clipboard = window.navigator().clipboard();
+                                        let promise = clipboard.write_text(&url);
+
+                                        wasm_bindgen_futures::spawn_local(async move {
+                                            match wasm_bindgen_futures::JsFuture::from(promise).await {
+                                                Ok(_) => {
+                                                    web_sys::console::log_1(&"Copied to clipboard successfully!".into());
+                                                },
+                                                Err(err) => {
+                                                    web_sys::console::error_2(&"Failed to copy to clipboard: ".into(), &err);
+                                                }
+                                            }
+                                        });
+                                    };
+                                }
+                            }
+                            title="Copy link to Clipboard"
+                        >
+                            {move || current_localizer.get().get_ui("share")}
+                        </button>
                     </div>
 
                     <div class="production-tree">
