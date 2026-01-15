@@ -7,4 +7,14 @@ edition = "2024"
 endfield_planner_core = { path = "../core" }
 leptos = { version = "0.8.15", features = ["csr"] }
 console_error_panic_hook = "0.1"
-web-sys = { version = "0.3.83", features = ["Navigator"] }
+web-sys = { version = "0.3.83", features = [
+  "Navigator",
+  "Window",
+  "Location",
+  "Url",
+  "UrlSearchParams",
+  "Clipboard",
+  "console",
+  "History",
+] }
+wasm-bindgen-futures = "0.4.58"
