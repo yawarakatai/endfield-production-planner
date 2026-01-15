@@ -1,4 +1,5 @@
 /* ============================================
+
    Endfield Production Planner - Stylesheet
    Visual Identity: Industrial / Sci-Fi
    Responsive Edition
@@ -981,6 +982,34 @@ body {
 ::selection {
   background: var(--color-accent);
   color: var(--color-text-on-accent);
+}
+
+/* ===== Share Button ===== */
+.share-button {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-tiny);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-left: auto;
+}
+
+.share-button:hover {
+  background: var(--color-accent-hover);
+}
+
+.share-button:active {
+  transform: scale(0.98);
+}
+
+.target-info {
+  justify-content: space-between;
 }
 
 /* ============================================
