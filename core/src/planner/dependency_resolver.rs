@@ -104,6 +104,7 @@ fn build_resolved_node(
         load: calc.load,
         power_usage: calc.power_usage,
         inputs: children,
+        is_source: recipe.is_source,
     }
 }
 

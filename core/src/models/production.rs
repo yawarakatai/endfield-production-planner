@@ -11,6 +11,7 @@ pub enum ProductionNode {
         power_usage: u32,
         load: f64,
         inputs: Vec<ProductionNode>,
+        is_source: bool,
     },
     Unresolved {
         item_id: String,
@@ -59,6 +60,20 @@ impl ProductionNode {
         }
     }
 
+    pub fn total_power_exclude_source(&self) -> u32 {
+        match self {
+            ProductionNode::Resolved {
+                power_usage,
+                inputs,
+                is_source,
+                ..
+            } if !is_source => {
+                power_usage + inputs.iter().map(|child| child.total_power()).sum::<u32>()
+            }
+            _ => 0,
+        }
+    }
+
     pub fn total_source_materials(&self) -> HashMap<String, u32> {
         self.collect_totals(|node| match node {
             ProductionNode::Resolved {
@@ -81,6 +96,20 @@ impl ProductionNode {
                 machine_count,
                 ..
             } if !machine_id.is_empty() => Some((machine_id.clone(), *machine_count)),
+            _ => None,
+        })
+    }
+
+    pub fn total_machines_exclude_source(&self) -> HashMap<String, u32> {
+        self.collect_totals(|node| match node {
+            ProductionNode::Resolved {
+                machine_id,
+                machine_count,
+                is_source,
+                ..
+            } if !machine_id.is_empty() && !*is_source => {
+                Some((machine_id.clone(), *machine_count))
+            }
             _ => None,
         })
     }
